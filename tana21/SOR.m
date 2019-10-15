@@ -16,7 +16,7 @@ function [x,k] = SOR(A,b,x0,omega,tol)
 %%
 %  get the system size
    n = length(A);
-   max_iter = 10^4;
+   max_iter = 10^5;
    x = x0;
    xpre = x0;
    
