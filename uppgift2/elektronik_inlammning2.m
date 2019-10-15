@@ -1,3 +1,4 @@
+clear
 r1 = 1000;
 r2 = 1000;
 r3 = 10;
@@ -15,6 +16,7 @@ At = 1/r3 + 1/(i * omega * l1);
 
 ze1 = 1 / Ae1;
 zt = 1/ At ;
+ZT = zt;
 
 z_prim_t = (n1n2 ^ 2 ) * zt;
 
