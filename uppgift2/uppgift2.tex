@@ -190,7 +190,22 @@ Spänningen $U_{ab}$ får genom spänningsdelning. $U_{ab} = \frac{Z_{e2} U_0}{Z
 Reaktiv effekt fås enligt $Q = X I_e^2$ och aktiv effekt enligt $P = R I_e^2$. $I_e = \frac{1}{\sqrt{2}}\left|\frac{U}{Z_t}\right| = HITTA I MATLAB$. Detta ger $Q = HITTA I MATLAB$ och $P = HiTTA I MATLAB$.
 
 \section{C}
-Maximal effektutveckling erhålls då $z_e2 = Z_i^*$
+Maximal effektutveckling erhålls då $z_e2 = Z_i^*$ (konjugatet av $Z_i$) om yttre resistans och reaktans kan varieras fritt, vilket är fallet denna gång.
 
+\begin{circuitikz}[american, scale=0.8, /tikz/circuitikz/bipoles/length=1cm] \draw
+(0,0) to[esource ,v<=$E$]++(0,4)
+to[generic,l_=$Z_i$,-*]++(3,0)node[label=A](A){}
+--++(6,0)
+to[generic,l=$Z_k$]++(0,-4)--++(-2,0) 
+++(0,4)to[generic,l=$\frac{1}{j \omega C_2}$]++(0,-4) 
+--(3,0)node[label=B](B){}
+to[short, *-](0,0)
+
+++(5,4) to[generic,l_=$R_1$]++(0,-4)
+;
+
+\end{circuitikz}
+
+Enligt ovanstående krets blir totala yttre resistansen $\frac{1}{Z_i^*} = \frac{1}{R_1} + j \omega C_2 + \frac{1}{Z_k}$ med $\frac{1}{Z_k} = \frac{1}{Z'_t} + \frac{1}{R_2 + \frac{1}{j \omega C_1}}$. Om två komplexa tal ska vara lika med varandra måste realdelarna,respektive imaginärdelarna vara lika med varandra. Detta ger följande ekvationer. 
 
 \end{document}
