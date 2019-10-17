@@ -99,10 +99,10 @@ Alla komponenter antas vara ideala. Komponenternas värden står tydligt utmarke
 All beräkning skedde genom ett matlab-script, var vid jag inte explicit räknar ut något annat än svaren.
 \section{Deluppgift a}
 
-Jag börjar med att ersätta strömkällan och dess inre resistans med en spänningskälla och den inre resistansen i serie. Detta får jag göra då de båda delkretsarna är antigen en Nortonekvivalent eller en Theveninekvivalent, vilket gör att kretsarna blir ekvivalenta. Sedan skriver jag om allt till komplex form och använder $j\omega$-metoden. Den omtalade spänningskällan får då värdet $E = Z_iI = 100e^{j\frac{\pi}{4}} \cdot 0.01 = e^{j\frac{\pi}{4}} V$ Detta illustreras i följande schema.
+Jag börjar med att ersätta strömkällan och dess inre resistans med en spänningskälla och den inre resistansen i serie. Detta får jag göra då de båda delkretsarna är antigen en Nortonekvivalent eller en Theveninekvivalent, vilket gör att kretsarna blir ekvivalenta. Sedan skriver jag om allt till komplex form och använder $j\omega$-metoden. Den omtalade spänningskällan får då värdet $E = Z_iI = 100e^{j\frac{\pi}{4}} \cdot 0.01 = e^{j\frac{\pi}{4}} V$ Detta illustreras i figur \ref{just_complex}.
 
 % Komplext schema------------------------------------------------
-\begin{figure}
+\begin{figure}[h]
 \begin{circuitikz}[american, scale=0.8, /tikz/circuitikz/bipoles/length=1cm] \draw
 (0,0) to[esource ,v<=$E$]++(0,4)
 to[generic,l_=$Z_i$,-*]++(3,0)node[label=A](A){}
@@ -130,10 +130,11 @@ to[generic,l=$R_3$]++(0,4)
 \label{just_complex}
 \end{figure}
 
-Sedan föreklar kretsen till följande.
+Sedan förenklar kretsen till figur \ref{simple_complex}.
 
 % Förenklat med transformator------------------------------------------------
-\begin{figure}
+\begin{figure}[h!]
+\centering
 \begin{circuitikz}[american, scale=0.8, /tikz/circuitikz/bipoles/length=1cm] \draw
 (0,0) to[esource ,v<=$E$]++(0,4)
 to[generic,l_=$Z_i$,-*]++(3,0)node[label=A](A){}
@@ -150,7 +151,7 @@ to[short, *-](0,0)
 ;
 \draw(T.B1)-- ++(0,1)--++(3,0)
 to[generic,l_=$Z_t$]++(0,-4)
-++(4,4)to[open,v^=$U$]++(0,-4)to[open]++(-4,0)
+++(2,4)to[open,v^=$U$]++(0,-4)to[open]++(-2,0)
 -|(T.B2)
 
 ;
@@ -162,7 +163,7 @@ to[generic,l_=$Z_t$]++(0,-4)
 Detta ger 
 \begin{equation}
     Z_{e1} = R_1 // (R_2 + \frac{1}{j \omega C_1})//\frac{1}{j \omega C_2} \quad \Rightarrow \quad \\
-    Z_{e1} = (\frac{1}{R_1} + \frac{1}{(R_2 + \frac{1}{j \omega C_1}})+ j \omega C_2)^{-1}
+    Z_{e1} = (\frac{1}{R_1} + \frac{1}{(R_2 + \frac{1}{j \omega C_1})}+ j \omega C_2)^{-1}
 \end{equation}
 
 och 
@@ -174,7 +175,8 @@ och
 Transformatorn och $Z_t$ kan ersättas enligt följande. $Z'_t = \left(\frac{N_1}{N_2}\right)^2 Z_t$. Se figur \ref{simple_no}.
 
 % Förenklat utan transformator------------------------------------------------
-\begin{figure}
+\begin{figure}[h]
+\centering
 \begin{circuitikz}[american, scale=0.8, /tikz/circuitikz/bipoles/length=1cm] \draw
 (0,0) to[esource ,v<=$E$]++(0,4)
 to[generic,l_=$Z_i$,-*]++(3,0)node[label=A](A){}
@@ -197,16 +199,17 @@ Nu ersätts $Z_{e1} // Z'_t$ med $Z_{e2} = \frac{Z_{e1} Z'_t}{Z_{e1} + Z'_t}$
 Spänningen $U_{ab}$ får genom spänningsdelning. 
 \begin{equation}
     U_{ab} = \frac{Z_{e2}
-U_0}{Z_{e2} + Z_i}
+E}{Z_{e2} + Z_i}
 \end{equation}
 
 Spänningen $U$ fås genom spänningsformel för ideal
 transformator som i detta fallet är $\frac{u_1}{u_2} = \frac{N_1}{N_2} \quad
-\Rightarrow \quad U = \frac{U_{ab}}{\frac{N_1}{N_2}}$ För $u(t) = A\sin{1000t + \phi}$ är $A$ beloppet av $U$ och $\phi = \arg{U}$.
+\Rightarrow \quad \\
+U = \frac{U_{ab}}{\frac{N_1}{N_2}}$ För $u(t) = A\sin{1000t + \phi}$ är $A$ beloppet av $U$ och $\phi = \arg{U}$.
 
 \section{Deluppgift b}
 
-Reaktiv effekt fås enligt $Q = X I_e^2$ och aktiv effekt enligt $P = R I_e^2$. $I_e = \frac{1}{\sqrt{2}}\left|\frac{U}{Z_t}\right|$. Detta ger $Q = 3.52 \cdot 10^{-4} \Omega$ och $P = 3.52 \cdot 10^{-4} \Omega$.
+Reaktiv effekt fås allmänt enligt $Q = X I_e^2$ och aktiv effekt enligt $P = R I_e^2$. I detta fall är $I_e = \frac{1}{\sqrt{2}}\left|\frac{U}{Z_t}\right|$ , $R = \operatorname{}{Re}(Z_t)$ och $X = \operatorname{}{Im}(Z_t)$. Detta ger $Q = 3.52 \cdot 10^{-4} \Omega$ och $P = 3.52 \cdot 10^{-4} \Omega$.
 
 \section{Deluppgift c}
 Maximal effektutveckling erhålls då $z_e2 = Z_i^*$ (konjugatet av $Z_i$) om yttre resistans och reaktans kan varieras fritt, vilket är fallet denna gång.
@@ -232,7 +235,7 @@ Enligt ovanstående krets blir totala yttre resistansen $\frac{1}{Z_i^*} = \frac
 Om två komplexa tal ska vara lika med varandra måste realdelarna,respektive imaginärdelarna vara lika med varandra. Detta ger följande ekvationer.
 
 \begin{align}
-\operatorname{Re}(\frac{1}{z_i^*}) =& \frac{1}{Z_k} + \operatorname{Re}(\frac{1}{Z_k}) \\
+\operatorname{Re}(\frac{1}{z_i^*}) =& \frac{1}{R_1} + \operatorname{Re}(\frac{1}{Z_k}) \\
 \operatorname{Im}(\frac{1}{z_i^*}) =&  \omega C_2 + \operatorname{Im}(\frac{1}{Z_k})
 \end{align}
 
