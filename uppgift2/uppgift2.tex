@@ -10,7 +10,7 @@
 \usepackage[export]{adjustbox}
 \usepackage{subcaption}
 \usepackage{pdfpages}
-\usetikzlibrary{calc}
+%\usetikzlibrary{calc}
 \usepackage{fancyhdr}
 \usepackage[framed, numbered]{matlab-prettifier}
  
@@ -205,14 +205,15 @@ E}{Z_{e2} + Z_i}
 Spänningen $U$ fås genom spänningsformel för ideal
 transformator som i detta fallet är $\frac{u_1}{u_2} = \frac{N_1}{N_2} \quad
 \Rightarrow \quad \\
-U = \frac{U_{ab}}{\frac{N_1}{N_2}}$ För $u(t) = A\sin{1000t + \phi}$ är $A$ beloppet av $U$ och $\phi = \arg{U}$.
+U = \frac{U_{ab}}{\frac{N_1}{N_2}}$ För $u(t) = A\sin{(1000t + \phi)}$ är $A = |U|= 0.0839 $ och $\phi = \arg{U} = 0.5940
+$.
 
 \section{Deluppgift b}
 
 Reaktiv effekt fås allmänt enligt $Q = X I_e^2$ och aktiv effekt enligt $P = R I_e^2$. I detta fall är $I_e = \frac{1}{\sqrt{2}}\left|\frac{U}{Z_t}\right|$ , $R = \operatorname{}{Re}(Z_t)$ och $X = \operatorname{}{Im}(Z_t)$. Detta ger $Q = 3.52 \cdot 10^{-4} \Omega$ och $P = 3.52 \cdot 10^{-4} \Omega$.
 
 \section{Deluppgift c}
-Maximal effektutveckling erhålls då $z_e2 = Z_i^*$ (konjugatet av $Z_i$) om yttre resistans och reaktans kan varieras fritt, vilket är fallet denna gång.
+Maximal effektutveckling erhålls då $z_{e2} = Z_i^*$ (konjugatet av $Z_i$) om yttre resistans och reaktans kan varieras fritt, vilket är fallet denna gång.
 
 \begin{circuitikz}[american, scale=0.8, /tikz/circuitikz/bipoles/length=1cm] \draw
 (0,0) to[esource ,v<=$E$]++(0,4)

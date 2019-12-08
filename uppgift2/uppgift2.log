@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.9.13)  17 OCT 2019 10:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.9.12)  3 NOV 2019 23:23
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/oskar/Documents/git_uni/uppgift2/uppgift2.tex
-(/home/oskar/Documents/git_uni/uppgift2/uppgift2.tex
+**/home/oskar/Documents/github_school/uppgift2/uppgift2.tex
+(/home/oskar/Documents/github_school/uppgift2/uppgift2.tex
 LaTeX2e <2017-04-15>
 Babel <3.18> and hyphenation patterns for 84 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -1305,7 +1305,7 @@ File: babel.def 2018/02/14 3.18 Babel common definitions
 \bbl@dirlevel=\count320
 )
 Package babel Info: Making " an active character on input line 90.
-)) (/home/oskar/Documents/git_uni/uppgift2/uppgift2.aux)
+)) (/home/oskar/Documents/github_school/uppgift2/uppgift2.aux)
 \openout1 = `uppgift2.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
@@ -1458,7 +1458,7 @@ File: elektronikuppgifter.pdf Graphic file (type pdf)
 <use elektronikuppgifter.pdf, page 2>
 Package pdftex.def Info: elektronikuppgifter.pdf , page2 used on input line 44.
 (pdftex.def)             Requested size: 597.45789pt x 845.1138pt.
- [2 </home/oskar/Documents/git_uni/uppgift2/elektronikuppgifter.pdf, page is rotated 90 degrees>]
+ [2 </home/oskar/Documents/github_school/uppgift2/elektronikuppgifter.pdf, page is rotated 90 degrees>]
 Overfull \hbox (32.83759pt too wide) in paragraph at lines 72--73
 [][] 
  []
@@ -1475,40 +1475,40 @@ Overfull \hbox (8.5632pt too wide) in paragraph at lines 128--129
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [3] [4]
-Underfull \hbox (badness 10000) in paragraph at lines 250--253
+Underfull \hbox (badness 10000) in paragraph at lines 251--254
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 250--253
+Underfull \hbox (badness 10000) in paragraph at lines 251--254
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 250--253
+Underfull \hbox (badness 10000) in paragraph at lines 251--254
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 250--253
+Underfull \hbox (badness 10000) in paragraph at lines 251--254
 
  []
 
-(/home/oskar/Documents/git_uni/uppgift2/elektronik_inlammning2.m [5]
+(/home/oskar/Documents/github_school/uppgift2/elektronik_inlammning2.m [5]
 LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 46.
  (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)) [6] (/home/oskar/Documents/git_uni/uppgift2/uppgift2.aux) ) 
+)) [6] (/home/oskar/Documents/github_school/uppgift2/uppgift2.aux) ) 
 Here is how much of TeX's memory you used:
  38656 strings out of 492982
- 840760 string characters out of 6134896
- 1039318 words of memory out of 5000000
+ 840826 string characters out of 6134896
+ 1039566 words of memory out of 5000000
  41718 multiletter control sequences out of 15000+600000
  545547 words of font info for 62 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,18n,121p,10422b,2062s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,18n,121p,10428b,2062s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfsl1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1000.pfb>
-Output written on /home/oskar/Documents/git_uni/uppgift2/uppgift2.pdf (6 pages, 523238 bytes).
+Output written on /home/oskar/Documents/github_school/uppgift2/uppgift2.pdf (6 pages, 523730 bytes).
 PDF statistics:
  106 PDF objects out of 1000 (max. 8388607)
  75 compressed objects within 1 object stream
