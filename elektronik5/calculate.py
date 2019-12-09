@@ -1,5 +1,5 @@
 from sympy.solvers import solve
-from sympy import Symbol, Eq, latex, sympify
+from sympy import Symbol, Eq, latex, sympify, sin
 from sympy.parsing.latex import parse_latex
 
 def print_eq_order(vl,hl):
@@ -24,6 +24,28 @@ def print_eq_order(vl,hl):
         HL += latex(sympify(word, evaluate=False))
     print(VL + " = " + HL + r"\\")
     return eq
+
+v_R_G1 = 10**6
+v_R_G2 = 10**6
+v_R_D2 = 100
+v_R_S1 = 200
+v_R_S2 = 2*10**3
+v_R_1 = 10*10**3
+v_R_L = 2*10**3
+v_E = 12
+v_g_m = 4*10**-4
+v_B = 100
+v_h_11 = 2*10**3
+v_I_CQ = 1 * 10**-3
+v_U_CEQ = 4
+v_U_DSQ = 5
+v_I_DQ = 5 * 10**-3
+t = Symbol('t')
+v_u_in = sin(10**3 * sin(t))
+v_U_BE = 0.7 
+v_h_21 = 100
+print(latex(v_u_in))
+
 
 
 # Variabler för båda stegen
@@ -72,6 +94,8 @@ u_ut = Symbol('u_ut')
 i_2 = Symbol('i_2')
 u_2 = Symbol('u_2')
 R_p3 = Symbol('R_p3')
+
+values = {R_G1:v_R_G1, R_G2:v_R_G2, R_D2:v_R_D2, R_S1:v_R_S1, R_S2:v_R_S2, R_1:v_R_1, R_L:v_R_L, E_1:v_E, g_m:v_g_m, B:v_B, h_11:v_h_11, I_CQ:v_I_CQ, U_CEQ:v_U_CEQ, U_DSQ:v_U_DSQ, I_DQ:v_I_DQ, U_BE:v_U_BE, h_21:v_h_21}
 
 # För R2
 print()
@@ -129,8 +153,22 @@ solved_r3 = solve(eq5, R_3)
 solved_r_d1 = solve((eq6, eq7, eq8, eq2), R_D1, I_3, I_E, I_B)
 solved_u_ut = solve((eq9,eq10,eq11, eq12, eq13, eq14, eq15, eq16, eq17,eq18), u_ut,R_p1,R_p2, u_gs1, i_1, i_b, u_1, i_2, u_2, u_gs2)
 #solved_u_ut = solve((eq11, eq14, eq13, eq12), u_gs1, i_b, i_2, u_1)
-print(latex(solved_r2[0]) + r"\\")
-print( latex(solved_r3[0]) + r"\\")
-print(latex(solved_r_d1[0]) + r"\\")
-print(latex(solved_u_ut) + r"\\")
+print(latex(solved_r2[0][0]) + r"\\")
+print(latex(solved_r3[0]) + r"\\")
+print(latex(solved_r_d1[0][0]) + r"\\")
+print(latex(solved_u_ut[0][0]) + r"\\")
+print(r"\end{math}")
+print()
+
+print("Evaluated")
+print()
+print(r"\begin{math}")
+v_R_2 = float(latex(solved_r2[0][0].evalf(subs=values)))
+v_R_3 = float(latex(solved_r3[0].evalf(subs=values)))
+v_R_D1 = float(latex(solved_r_d1[0][0].evalf(subs=values)))
+print("R_2 = " + str(v_R_2))
+print("R_3 = " + str(v_R_3))
+print("R_D1 = " + str(v_R_D1))
+values = {R_G1:v_R_G1, R_G2:v_R_G2, R_D2:v_R_D2, R_S1:v_R_S1, R_S2:v_R_S2, R_1:v_R_1, R_L:v_R_L, E_1:v_E, g_m:v_g_m, B:v_B, h_11:v_h_11, I_CQ:v_I_CQ, U_CEQ:v_U_CEQ, U_DSQ:v_U_DSQ, I_DQ:v_I_DQ, U_BE:v_U_BE, h_21:v_h_21, R_2:v_R_2, R_3:v_R_3, R_D1:v_R_D1}
+print("u_ut / u_in = " + latex(solved_u_ut[0][0].subs(values)))
 print(r"\end{math}")
