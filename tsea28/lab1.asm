@@ -53,7 +53,7 @@ deactivatealarm:
 	mov r1,#(GPIOF_GPIODATA & 0xFFFF)	; lagrar address till led i r1
 	movt r1,#(GPIOF_GPIODATA >> 16)
 	mov r0,#0x08						; sätter fyra sista bitarna 1000
-	str r0,[r1]							; skriver till led
+	strb r0,[r1]							; skriver till led
 bx lr
 
 
@@ -67,7 +67,7 @@ deactivatealarm:
 	mov r1,#(GPIOF_GPIODATA & 0xFFFF)	; lagrar address till led i r1
 	movt r1,#(GPIOF_GPIODATA >> 16)
 	mov r0,#0x02						; sätter fyra sista bitarna 0010
-	str r0,[r1]							; skriver till led
+	strb r0,[r1]							; skriver till led
 
 	bx lr
 
@@ -81,12 +81,12 @@ getkey:
 	movt r1,#(GPIOB_GPIODATA >> 16)
 
 notpressedloop:
-	ldr r2,[r1]
+	ldrb r2,[r1]
 	ands r2,r2,#0x10
 	beq notpressedloop ; Loopa tills knapp trycks in
 
 pressedloop:
-	ldr r2,[r1]
+	ldrb r2,[r1]
 	ands r2,r2,#0x10
 	bne pressedloop ; Loopa tills knappen har släppts
 
@@ -106,14 +106,14 @@ pressedloop:
 ; adress 0x20001000.
 ; Förstör r0
 addkey:
-	ldr r0,0x20001002
-	str r0,0x20001003
-	ldr r0,0x20001001
-	str r0,0x20001002
-	ldr r0,0x20001000
-	str r0,0x20001001
+	ldrb r0,0x20001002
+	strb r0,0x20001003
+	ldrb r0,0x20001001
+	strb r0,0x20001002
+	ldrb r0,0x20001000
+	strb r0,0x20001001
 
-	str r4,0x20001000
+	strb r4,0x20001000
 
 	bx lr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
