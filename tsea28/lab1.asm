@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; Mall för lab1 i TSEA28 Datorteknik Y
 ;;
 ;; 190123 K.Palmkvist
@@ -9,17 +9,88 @@
 	.thumb
 	.text
 	.align 2
-
+	bl inituart ; intitiera serieport
+	bl initGPIOB ; initiera GPIO port B
+	bl initGPIOF ; initiera GPIO port F
 	;; Ange att labbkoden startar här efter initiering
 	.global	main
-	
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 	Placera programmet här
 
 main:				; Start av programmet
-	
-	b	main		; Denna rad bör tas bort (bara ett exempel)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Inargument: 	pekare till strängen i r4
+;				längd på strängen i r5
+; Utargument: 	inga
+;
+; Funktion: 	Skriver ut strängen mha subrutinen printchar
+; Förstör r0,r1,r2,r4,r5
+printstring:
+
+	add r5,r5,r4 		; Beräkna address för sista tecknet i strängen.
+
+printloop:
+	ldrb r0,[r4],#0x01	; Läs in tecken som byte från minnet till r0 och öka
+						; värdet på r4 med 1.
+	push {lr}			; spara lr på stacken
+	bl printchar 		; Skriv ut tecken på terminalen
+	pop {lr} 			; hämta lr från stack
+	cmp r4,r5			; Kolla om sista tecknet skrivits ut (observera index)
+	bne printloop
+	bx lr
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Inargument: Inga
+; Utargument: Inga
+;
+; Funktion: Tänder grön lysdiod (bit 3 = 1, bit 2 = 0, bit 1 = 0)
+; Förstör r1 och r0
+deactivatealarm:
+	mov r1,#(GPIOF_GPIODATA & 0xFFFF)	; lagrar address till led i r1
+	movt r1,#(GPIOF_GPIODATA >> 16)
+	mov r0,#0x08						; sätter tre sista bitarna 100
+	str r0,[r1]							; skriver till led
+bx lr
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Inargument: Inga
+; Utargument: Inga
+;
+; Funktion: Tänder grön lysdiod (bit 3 = 0, bit 2 = 0, bit 1 = 1)
+; Förstör r1 och r0
+deactivatealarm:
+	mov r1,#(GPIOF_GPIODATA & 0xFFFF)	; lagrar address till led i r1
+	movt r1,#(GPIOF_GPIODATA >> 16)
+	mov r0,#0x01						; sätter tre sista bitarna 001
+	str r0,[r1]							; skriver till led
+bx lr
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Inargument: Inga
+; Utargument: Tryckt knappt returneras i r4
+getkey:
+
+	mov r1,#(GPIOB_GPIODATA & 0xFFFF)
+	movt r1,#(GPIOB_GPIODATA >> 16)
+
+notpressedloop:
+	ldr r2,[r1]
+	ands r2,r2,#0x10
+	beq notpressedloop
+
+pressedloop:
+	ldr r2,[r1]
+	ands r2,r2,#0x10
+	bne notpressedloop
+
+läs tecken
+bx lr
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;,
 ;;;
@@ -28,12 +99,12 @@ main:				; Start av programmet
 ;;; Rutiner för initiering
 ;;; Se labmanual för vilka namn som ska användas
 ;;;
-	
+
 	.align 4
 
 ;; 	Initiering av seriekommunikation
-;;	Förstör r0, r1 
-	
+;;	Förstör r0, r1
+
 inituart:
 	mov r1,#(RCGCUART & 0xffff)		; Koppla in serieport
 	movt r1,#(RCGCUART >> 16)
@@ -63,7 +134,8 @@ inituart:
 	mov r1,#(UART0_UARTIBRD & 0xffff)
 	movt r1,#(UART0_UARTIBRD >> 16)
 	mov r0,#0x08
-	str r0,[r1]		; Sätt hastighet till 115200 baud
+	str r0,[r1]             ; Sätt hastighet till 115200 baud
+
 	mov r1,#(UART0_UARTFBRD & 0xffff)
 	movt r1,#(UART0_UARTFBRD >> 16)
 	mov r0,#44
@@ -73,7 +145,7 @@ inituart:
 	movt r1,#(UART0_UARTLCRH >> 16)
 	mov r0,#0x60
 	str r0,[r1]		; 8 bit, 1 stop bit, ingen paritet, ingen FIFO
-	
+
 	mov r1,#(UART0_UARTCTL & 0xffff)
 	movt r1,#(UART0_UARTCTL >> 16)
 	mov r0,#0x0301
@@ -81,7 +153,7 @@ inituart:
 
 	bx  lr
 
-; Definitioner för registeradresser (32-bitars konstanter) 
+; Definitioner för registeradresser (32-bitars konstanter)
 GPIOHBCTL	.equ	0x400FE06C
 RCGCUART	.equ	0x400FE618
 RCGCGPIO	.equ	0x400fe608
@@ -203,7 +275,7 @@ initGPIOB:
 
 	mov r1,#(GPIOB_GPIOPCTL & 0xffff)
 	movt r1,#(GPIOB_GPIOPCTL >> 16)
-	mov r0,#0x00		; använd inga specialfunktioner på port B	
+	mov r0,#0x00		; använd inga specialfunktioner på port B
 	str r0,[r1]
 
 	mov r1,#(GPIOB_GPIOPUR & 0xffff)
@@ -222,7 +294,7 @@ initGPIOB:
 ;; Utskrift av ett tecken på serieport
 ;; r0 innehåller tecken att skriva ut (1 byte)
 ;; returnerar först när tecken skickats
-;; förstör r0, r1 och r2 
+;; förstör r0, r1 och r2
 printchar:
 	mov r1,#(UART0_UARTFR & 0xffff)	; peka på serieportens statusregister
 	movt r1,#(UART0_UARTFR >> 16)
