@@ -74,6 +74,7 @@ deactivatealarm:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Inargument: Inga
 ; Utargument: Tryckt knappt returneras i r4
+; Förstör r4, r1,r2
 getkey:
 
 	mov r1,#(GPIOB_GPIODATA & 0xFFFF)
@@ -91,6 +92,27 @@ pressedloop:
 
 	ldrb r4,[r1]	; ladda input till r4
 	and r4,r4,#0x0f ; Nollställ översta fyra bitarna
+
+	bx lr
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Inargument: Vald tangent i r4
+; Utargument: Inga
+;
+; Funktion: Flyttar innehållet på 0x20001000-0x20001002 framåt en byte
+; till 0x20001001-0x20001003. Lagrar sedan innehållet i r4 på
+; adress 0x20001000.
+addkey:
+	ldr r0,0x20001002
+	str r0,0x20001003
+	ldr r0,0x20001001
+	str r0,0x20001002
+	ldr r0,0x20001000
+	str r0,0x20001001
+
+	str r4,0x20001000
 
 	bx lr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
