@@ -104,6 +104,7 @@ pressedloop:
 ; Funktion: Flyttar innehållet på 0x20001000-0x20001002 framåt en byte
 ; till 0x20001001-0x20001003. Lagrar sedan innehållet i r4 på
 ; adress 0x20001000.
+; Förstör r0
 addkey:
 	ldr r0,0x20001002
 	str r0,0x20001003
@@ -114,6 +115,34 @@ addkey:
 
 	str r4,0x20001000
 
+	bx lr
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Inargument: Inga
+; Utargument: Inga
+;
+; Funktion: Sätter innehållet på 0x20001000-0x20001003 till 0xFF
+; Förstör r0
+clearinput:
+	mov r0,#(0xffffffff & 0xffff)
+	movt r0,#(0xffffffff >> 16)
+	str r0,#0x20001000	
+	bx lr
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Inargument: Inga
+; Utargument: Returnerar 1 i r4 om koden var korrekt, annars 0 i r4
+; förstör r1,r0
+checkcode:
+	mov r4, #0x00		; Sätt r4 till 0 som standard	
+	ldr r0, #0x20001000	 ; Ladd angiven nyckel
+	ldr r1, #0x20001010	 ; Ladda korrekt nyckel
+	cmp r0,r1 			; Jämför om lika
+	bne checkexit		; avsluta om ej lika
+	mov r4 #0x01 		; sätt r4 till 1 om lika
+checkexit:
 	bx lr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
