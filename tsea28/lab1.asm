@@ -9,9 +9,6 @@
 	.thumb
 	.text
 	.align 2
-	bl inituart ; intitiera serieport
-	bl initGPIOB ; initiera GPIO port B
-	bl initGPIOF ; initiera GPIO port F
 	;; Ange att labbkoden startar här efter initiering
 	.global	main
 
@@ -19,6 +16,15 @@
 ;; 	Placera programmet här
 
 main:				; Start av programmet
+	bl inituart ; intitiera serieport
+	bl initGPIOB ; initiera GPIO port B
+	bl initGPIOF ; initiera GPIO port F
+	mov r0,#(0x20001010 & 0xffff)
+	movt r0,#(0x20001010 >> 16)
+	mov r1,#(0x01020304 & 0xffff)
+	movt r1,#(0x01020304 >> 16)
+	str r1,[r0]
+	bl initerrorcounter
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Inargument: 	pekare till strängen i r4
@@ -54,33 +60,47 @@ deactivatealarm:
 	movt r1,#(GPIOF_GPIODATA >> 16)
 	mov r0,#0x08						; sätter fyra sista bitarna 1000
 	strb r0,[r1]							; skriver till led
-bx lr
+	push lr
+	bl initerrorcounter 				; Återställ antal felaktiga försök
+	pop lr
+	bx lr
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Inargument: Inga
 ; Utargument: Inga
 ;
-; Funktion: Tänder grön lysdiod (bit 3 = 0, bit 2 = 0, bit 1 = 1)
+; Funktion: Tänder röd lysdiod (bit 3 = 0, bit 2 = 0, bit 1 = 1)
 ; Förstör r1 och r0
-deactivatealarm:
+; Obs! Hamnar automatisk i getkey!
+activatealarm:
 	mov r1,#(GPIOF_GPIODATA & 0xFFFF)	; lagrar address till led i r1
 	movt r1,#(GPIOF_GPIODATA >> 16)
 	mov r0,#0x02						; sätter fyra sista bitarna 0010
 	strb r0,[r1]							; skriver till led
-
-	bx lr
+	push lr
+	bl clearinput 						; nollställer koden.
+	pop lr
+	b getkey							; invänta knapptryckning
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Inargument: Inga
 ; Utargument: Tryckt knappt returneras i r4
-; Förstör r4, r1,r2
+; Förstör r4, r1,r2 r3
 getkey:
-
+	mov r3,#0x00 	; initiera till 0, skall användas för att räkna antal loopar
+	mov r5,#(0x01312d00 & 0xFFFF)	; 20 000 000 loopar för att dröja en sekund.
+	movt r5,#(0x01312d00 >> 16)
 	mov r1,#(GPIOB_GPIODATA & 0xFFFF)
 	movt r1,#(GPIOB_GPIODATA >> 16)
 
 notpressedloop:
+	add r3,r3,#0x01
+	cmp r5,r3
+	beq activatealarm	; Loopa upp till 20 000 000 gånger, lås sedan. 
+						; Detta görs också medans man slår in koden så att
+						; man inte kan slå in havla koden och sedan gå där ifrån.
+	
 	ldrb r2,[r1]
 	ands r2,r2,#0x10
 	beq notpressedloop ; Loopa tills knapp trycks in
@@ -106,14 +126,14 @@ pressedloop:
 ; adress 0x20001000.
 ; Förstör r0
 addkey:
-	ldrb r0,0x20001002
-	strb r0,0x20001003
-	ldrb r0,0x20001001
-	strb r0,0x20001002
-	ldrb r0,0x20001000
-	strb r0,0x20001001
+	ldrb r0,#0x20001002
+	strb r0,#0x20001003
+	ldrb r0,#0x20001001
+	strb r0,#0x20001002
+	ldrb r0,#0x20001000
+	strb r0,#0x20001001
 
-	strb r4,0x20001000
+	strb r4,#0x20001000
 
 	bx lr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -146,7 +166,56 @@ checkexit:
 	bx lr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Inargument: Inga
+; Utargument: Inga
+; förstör r1,r0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+adderrorcounter:
+	mov r0,#(ERROR_COUNTER & 0xffff) ; Laddar första addressen till ERROR_CONTER
+	movt r0,#(ERROR_COUNTER >> 16)
+
+errorcounterloop:
+	mov r1,[r0]		; Lagrar värdet på den givna adderessen i r0
+	cmp r1,#0xff	; Kollar om siffran är oinitierad
+	beq unitiated	 
+
+	add r1,r1,0x01 ; Annars öka värdet på siffran med 1
+	cmp r1,#0x3a
+	beq carry		; Om blivit större än 9, kör carry subrutin
+
+	str r1,[r0]
+
+	bx lr
+
+carry:	
+	mov r1 0x30 	; Ändra tillbaka till 0
+	str r1,[r0]		; lagra siffran 0 på addressen
+	add r0,r0,0x01 	; Öka addressen med 1 (kolla på nästa siffra)
+	b errorcounterloop ; Göra samma för nästa siffra
+
+unitiated:
+	mov r1,0x31 	; Sätt siffran till 1 och avsluta
+	str r1,[r0]
+	bx lr
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;,
+
+
+; sätter alla addresser från ERROR_COUNTER till ERROR_STRING till ottilåtna 0xff
+initerrorcounter:
+	mov r0,#(ERROR_COUNTER & 0xffff) ; Laddar första addressen till ERROR_CONTER
+	movt r0,#(ERROR_COUNTER >> 16)
+	mov r1,0xff ; sätter r1 till ottillåtet tecken
+zeroloop:
+	str r1,[r0],#0x01 ; nollställer adress 0x20001020-0x200010ff
+	cmp ERROR_COUNTER, ERROR_STRING 
+	beq zeroloop 	;Hoppar om vi fyllt alla platser upp till ERROR_STRING
+					; annars avsluta
+
+	bx
+
+
 ;;;
 ;;; Allt här efter ska inte ändras
 ;;;
@@ -236,6 +305,10 @@ GPIOF_GPIOPUR	.equ	0x40025510
 GPIOF_GPIOCR	.equ	0x40025524
 GPIOF_GPIOAMSEL	.equ	0x40025528
 GPIOF_GPIOPCTL	.equ	0x4002552c
+
+;egna adresser
+ERROR_COUNTER	.equ	0x20001020
+ERROR_STRING	.equ	0x20001100
 
 ;; Initiering av port F
 ;; Förstör r0, r1, r2
