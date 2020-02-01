@@ -28,7 +28,8 @@ main:				; Start av programmet
 	movt r1,#(0x01020304 >> 16)
 	str r1,[r0] 					; lagrar rätt kod i minnet
 
-	mov r1,#ERROR_STRING
+	mov r1,#(ERROR_STRING & 0xffff)
+	movt r1,#(ERROR_STRING >> 16)
 
 
 	mov r0, #0x46	;F
@@ -73,14 +74,16 @@ main:				; Start av programmet
 	mov r0, #0x28	;(
 	strb r0,[r1],#0x01
 
-	sub r5,r1,#ERROR_STRING
+	mov r2,#(ERROR_STRING & 0xffff) 
+	movt r2,#(ERROR_STRING >> 16)
+	sub r5,r1,r2
 	bl printstring	
 	bl printerror
 	
-	mov r0,0x29 ;)
+	mov r0,#0x29 ;)
 	bl printchar
 
-	mov r0,0x0a ; \n
+	mov r0,#0x0a ; \n
 	bl printchar
 
 keypresslopp:
@@ -92,7 +95,7 @@ keypresslopp:
 	cmp r4,#0x0f		; kolla om man tryck på f.
 	adr lr,labelcheckcode
 	beq checkcode	; Kolla om rätt kod slagits in
-:labelcheckcode		; hoppa sedan tillbaka till samma plats
+labelcheckcode:		; hoppa sedan tillbaka till samma plats
 
 	adr lr,labelgetkey	
 	cmp r4,#0x01		; Om rätt kod slagits in, avaktivera alarmet
@@ -106,9 +109,9 @@ keypresslopp:
 
 	b labelgetkey
 
-:labeladdkey
+labeladdkey:
 	bl addkey
-:labelgetkey
+labelgetkey:
 	bl getkey
 
 
@@ -146,9 +149,9 @@ deactivatealarm:
 	movt r1,#(GPIOF_GPIODATA >> 16)
 	mov r0,#0x08						; sätter fyra sista bitarna 1000
 	strb r0,[r1]							; skriver till led
-	push lr
+	push {lr}
 	bl initerrorcounter 				; Återställ antal felaktiga försök
-	pop lr
+	pop {lr}
 	bx lr
 
 
@@ -164,9 +167,9 @@ activatealarm:
 	movt r1,#(GPIOF_GPIODATA >> 16)
 	mov r0,#0x02						; sätter fyra sista bitarna 0010
 	strb r0,[r1]							; skriver till led
-	push lr
+	push {lr}
 	bl clearinput 						; nollställer koden.
-	pop lr
+	pop {lr}
 	b getkey							; invänta knapptryckning
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -210,16 +213,27 @@ pressedloop:
 ; Funktion: Flyttar innehållet på 0x20001000-0x20001002 framåt en byte
 ; till 0x20001001-0x20001003. Lagrar sedan innehållet i r4 på
 ; adress 0x20001000.
-; Förstör r0
+; Förstör r0,r1,r2,r3
 addkey:
-	ldrb r0,#0x20001002
-	strb r0,#0x20001003
-	ldrb r0,#0x20001001
-	strb r0,#0x20001002
-	ldrb r0,#0x20001000
-	strb r0,#0x20001001
+	mov r0,#(0x20001000 & 0xffff)
+	movt r0,#(0x20001000 >> 16)
+	
+	mov r1,#(0x20001001 & 0xffff)
+	movt r1,#(0x20001001 >> 16)
 
-	strb r4,#0x20001000
+	mov r2,#(0x20001002 & 0xffff)
+	movt r2,#(0x20001002 >> 16)
+
+	mov r3,#(0x20001003 & 0xffff)
+	movt r3,#(0x20001003 >> 16)
+
+	ldrb r0,[r2]
+	strb r0,[r3]
+	ldrb r0,[r1]
+	strb r0,[r2]
+	ldrb r0,[r0]
+	strb r0,[r1]
+	strb r4,[r0]
 
 	bx lr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -233,7 +247,10 @@ addkey:
 clearinput:
 	mov r0,#(0xffffffff & 0xffff)
 	movt r0,#(0xffffffff >> 16)
-	str r0,#0x20001000	
+
+	mov r2,#(0x20001000 & 0xffff)
+	movt r2,#(0x20001000 >> 16)
+	str r0,[r2]	
 	bx lr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -242,12 +259,19 @@ clearinput:
 ; Utargument: Returnerar 1 i r4 om koden var korrekt, annars 0 i r4
 ; förstör r1,r0, r4
 checkcode:
-	mov r4, #0x00		; Sätt r4 till 0 som standard	
-	ldr r0, #0x20001000	 ; Ladd angiven nyckel
-	ldr r1, #0x20001010	 ; Ladda korrekt nyckel
+	mov r4,#0x00		; Sätt r4 till 0 som standard	
+
+	mov r2,#(0x20001000 & 0xffff)
+	movt r2,#(0x20001000 >> 16)
+
+	mov r3,#(0x20001010 & 0xffff)
+	movt r3,#(0x20001010 >> 16)
+
+	ldr r0,[r2] ; Ladd angiven nyckel
+	ldr r1,[r3]	 ; Ladda korrekt nyckel
 	cmp r0,r1 			; Jämför om lika
 	bne checkexit		; avsluta om ej lika
-	mov r4 #0x01 		; sätt r4 till 1 om lika
+	mov r4,#0x01 		; sätt r4 till 1 om lika
 checkexit:
 	bx lr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -266,7 +290,7 @@ errorcounterloop:
 	cmp r1,#0xff	; Kollar om siffran är oinitierad
 	beq unitiated	 
 
-	add r1,r1,0x01 ; Annars öka värdet på siffran med 1
+	add r1,r1,#0x01 ; Annars öka värdet på siffran med 1
 	cmp r1,#0x3a
 	beq carry		; Om blivit större än 9, kör carry subrutin
 
@@ -275,13 +299,13 @@ errorcounterloop:
 	bx lr
 
 carry:	
-	mov r1 0x30 	; Ändra tillbaka till 0
+	mov r1, #0x30 	; Ändra tillbaka till 0
 	strb r1,[r0]		; lagra siffran 0 på addressen
-	add r0,r0,0x01 	; Öka addressen med 1 (kolla på nästa siffra)
+	add r0,r0,#0x01 	; Öka addressen med 1 (kolla på nästa siffra)
 	b errorcounterloop ; Göra samma för nästa siffra
 
 unitiated:
-	mov r1,0x31 	; Sätt siffran till 1 och avsluta
+	mov r1,#0x31 	; Sätt siffran till 1 och avsluta
 	strb r1,[r0]
 	bx lr
 
@@ -292,10 +316,12 @@ unitiated:
 initerrorcounter:
 	mov r0,#(ERROR_COUNTER & 0xffff) ; Laddar första addressen till ERROR_COUNTER
 	movt r0,#(ERROR_COUNTER >> 16)
-	mov r1,0xff ; sätter r1 till ottillåtet tecken
+	mov r3,#(ERROR_STRING & 0xffff) 
+	movt r3,#(ERROR_STRING >> 16) ; laddar adressen för senare jämförelse.
+	mov r1,#0xff ; sätter r1 till ottillåtet tecken
 zeroloop:
 	strb r1,[r0],#0x01 ; nollställer adress 0x20001020-0x200010ff
-	cmp ERROR_COUNTER, ERROR_STRING 
+	cmp r3,r0 
 	beq zeroloop 	;Hoppar om vi fyllt alla platser upp till ERROR_STRING
 					; annars avsluta
 
@@ -306,12 +332,19 @@ zeroloop:
 ; Utargument: Inga
 ; Printar ut antal felaktiga försök att öppna låset
 printerror:
-	ldr r1,#ERROR_COUNTER
+	mov r1,#(ERROR_COUNTER & 0xffff) ; Laddar första addressen till ERROR_COUNTER
+	movt r1,#(ERROR_COUNTER >> 16)
+	
 loopprinterror:
+
 	ldr r0,[r1],#0x01
-	cmp r0,0xff
-	bne loopprinterror ; printa ut tecken till 0xff nås.
-	bx
+	cmp r0,#0xff
+	beq printerrorexit
+	bl printchar
+	b loopprinterror ; printa ut tecken till 0xff nås.
+
+printerrorexit:
+	bx lr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;
