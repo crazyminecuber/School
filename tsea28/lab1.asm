@@ -74,45 +74,68 @@ main:				; Start av programmet
 	mov r0, #0x28	;(
 	strb r0,[r1],#0x01
 
-	mov r2,#(ERROR_STRING & 0xffff) 
-	movt r2,#(ERROR_STRING >> 16)
-	sub r5,r1,r2
-	bl printstring	
-	bl printerror
+	mov r4,#(ERROR_STRING & 0xffff) ; läser in pekare till strängen
+	movt r4,#(ERROR_STRING >> 16)
+	sub r5,r1,r4 ; lagrar antal tecken i strängen
+
+	b labelgetkey 	; Efter all initalisering vill vi starta med getkey
+
+keypressloop:
+	cmp r4,#0x0a
+	bne intea
+	bl activatealarm	; Kolla om man tryckt på a, aktivera i så fall larmet
+						; och fortsätt med get key.
+	b labelgetkey
+
+intea:
+	cmp r4,#0x0f		; kolla om man tryck på f.
+	bne intef
+	bl checkcode	; Kolla om rätt kod slagits in
+	b labelcheckcode
+
+intef:
+	cmp r4,#0xff
+	bne intenull
+	bl activatealarm	; Kolla om tiden har gått ut och lås sedan
+						; Hämta ny tangent därefter
+	b labelgetkey
+
+intenull:
+	bl labeladdkey	; Om inte specialtecken (A,F) lägg till i inmatad nyckel
+	b labelgetkey				; Hoppa tillbaka till labelgetkey efteråt
+
+labelcheckcode:		; hoppa sedan tillbaka till samma plats
+
+	cmp r4,#0x01		; Om rätt kod slagits in, avaktivera alarmet
+	bne felkod
+	bl deactivatealarm	; och fortsätt med getkey
+	b labelgetkey
 	
+felkod:
+	bl adderrorcounter
+	mov r4,#(ERROR_STRING & 0xffff) ; läser in pekare till strängen
+	movt r4,#(ERROR_STRING >> 16)
+	bl printstring
+	bl printerror
+
 	mov r0,#0x29 ;)
 	bl printchar
 
 	mov r0,#0x0a ; \n
 	bl printchar
 
-keypresslopp:
-	cmp r4,#0x0a
-	adr lr,labelgetkey	
-	beq activatealarm	; Kolla om man tryckt på a, aktivera i så fall larmet
-						; och fortsätt med get key.
-
-	cmp r4,#0x0f		; kolla om man tryck på f.
-	adr lr,labelcheckcode
-	beq checkcode	; Kolla om rätt kod slagits in
-labelcheckcode:		; hoppa sedan tillbaka till samma plats
-
-	adr lr,labelgetkey	
-	cmp r4,#0x01		; Om rätt kod slagits in, avaktivera alarmet
-	beq deactivatealarm	; och fortsätt med getkey
-	
-	mov r4,#(ERROR_STRING & 0xffff) 
-	movt r4,#(ERROR_STRING >> 16)
-
-	bl printstring 
+	mov r0,#0x0d ; carridge return
+	bl printchar
 
 
 	b labelgetkey
 
 labeladdkey:
-	bl addkey
+	bl addkey ; Lägg till knapp och fortsätt i labelgetkey
+
 labelgetkey:
 	bl getkey
+	b keypressloop
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -124,7 +147,7 @@ labelgetkey:
 ; Förstör r0,r1,r2,r4,r5
 printstring:
 
-	add r5,r5,r4 		; Beräkna address för sista tecknet i strängen.
+	add r6,r5,r4 		; Beräkna address för sista tecknet i strängen.
 
 printloop:
 	ldrb r0,[r4],#0x01	; Läs in tecken som byte från minnet till r0 och öka
@@ -132,7 +155,7 @@ printloop:
 	push {lr}			; spara lr på stacken
 	bl printchar 		; Skriv ut tecken på terminalen
 	pop {lr} 			; hämta lr från stack
-	cmp r4,r5			; Kolla om sista tecknet skrivits ut (observera index)
+	cmp r4,r6			; Kolla om sista tecknet skrivits ut (observera index)
 	bne printloop
 	bx lr
 
@@ -170,7 +193,7 @@ activatealarm:
 	push {lr}
 	bl clearinput 						; nollställer koden.
 	pop {lr}
-	b getkey							; invänta knapptryckning
+	bx lr							; invänta knapptryckning
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Inargument: Inga
@@ -178,15 +201,17 @@ activatealarm:
 ; Förstör r4, r1,r2 r3, r6
 getkey:
 	mov r3,#0x00 	; initiera till 0, skall användas för att räkna antal loopar
-	mov r6,#(0x01312d00 & 0xFFFF)	; 20 000 000 loopar för att dröja en sekund.
-	movt r6,#(0x01312d00 >> 16)
+	;mov r6,#(0x01312d00 & 0xFFFF)	; 20 000 000 loopar för att dröja fem sekunder.
+	;movt r6,#(0x01312d00 >> 16)
+	mov r6, #(0x00612d00 & 0xFFFF)	; Några antal loopar skall inte ta riktigt 13 sekunder.
+	movt r6,#(0x00612d00 >> 16)
 	mov r1,#(GPIOB_GPIODATA & 0xFFFF)
 	movt r1,#(GPIOB_GPIODATA >> 16)
 
 notpressedloop:
 	add r3,r3,#0x01
 	cmp r6,r3
-	beq activatealarm	; Loopa upp till 20 000 000 gånger, lås sedan. 
+	beq timeout	; Loopa upp till 20 000 000 gånger, lås sedan.
 						; Detta görs också medans man slår in koden så att
 						; man inte kan slå in havla koden och sedan gå där ifrån.
 	
@@ -202,6 +227,10 @@ pressedloop:
 	ldrb r4,[r1]	; ladda input till r4
 	and r4,r4,#0x0f ; Nollställ översta fyra bitarna
 
+	bx lr
+
+timeout:
+	mov r4,#0x00ff
 	bx lr
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -227,12 +256,12 @@ addkey:
 	mov r3,#(0x20001003 & 0xffff)
 	movt r3,#(0x20001003 >> 16)
 
-	ldrb r0,[r2]
-	strb r0,[r3]
-	ldrb r0,[r1]
-	strb r0,[r2]
-	ldrb r0,[r0]
-	strb r0,[r1]
+	ldrb r6,[r2]
+	strb r6,[r3]
+	ldrb r6,[r1]
+	strb r6,[r2]
+	ldrb r6,[r0]
+	strb r6,[r1]
 	strb r4,[r0]
 
 	bx lr
@@ -322,7 +351,7 @@ initerrorcounter:
 zeroloop:
 	strb r1,[r0],#0x01 ; nollställer adress 0x20001020-0x200010ff
 	cmp r3,r0 
-	beq zeroloop 	;Hoppar om vi fyllt alla platser upp till ERROR_STRING
+	bne zeroloop 	;Hoppar om vi fyllt alla platser upp till ERROR_STRING
 					; annars avsluta
 
 	bx lr
@@ -332,19 +361,30 @@ zeroloop:
 ; Utargument: Inga
 ; Printar ut antal felaktiga försök att öppna låset
 printerror:
-	mov r1,#(ERROR_COUNTER & 0xffff) ; Laddar första addressen till ERROR_COUNTER
-	movt r1,#(ERROR_COUNTER >> 16)
-	
-loopprinterror:
-
-	ldr r0,[r1],#0x01
-	cmp r0,#0xff
-	beq printerrorexit
-	bl printchar
-	b loopprinterror ; printa ut tecken till 0xff nås.
-
-printerrorexit:
+	mov r3,#(ERROR_COUNTER & 0xffff) ; Laddar första addressen till ERROR_COUNTER
+	movt r3,#(ERROR_COUNTER >> 16)
+	push {lr}
+	bl rekursivprint
+	pop {lr}
 	bx lr
+
+rekursivprint:
+	ldrb r0,[r3]
+	cmp r0,#0xff
+	beq rekursivexit
+	push {lr,r3}
+	add r3,r3,#0x01
+	bl rekursivprint
+	pop {lr,r3}
+	ldrb r0,[r3]
+	push {lr}
+	bl printchar
+	pop {lr}
+
+
+rekursivexit:
+	bx lr
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;
