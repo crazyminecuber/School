@@ -28,57 +28,19 @@ main:				; Start av programmet
 	movt r1,#(0x01020304 >> 16)
 	str r1,[r0] 					; lagrar rätt kod i minnet
 
-	mov r1,#(ERROR_STRING & 0xffff)
-	movt r1,#(ERROR_STRING >> 16)
-
-
-	mov r0, #0x46	;F
-	strb r0,[r1],#0x01
-
-	mov r0, #0x65	;e
-	strb r0,[r1],#0x01
-
-	mov r0, #0x6c	;l
-	strb r0,[r1],#0x01
-
-	mov r0, #0x61	;a
-	strb r0,[r1],#0x01
-
-	mov r0, #0x6b	;k
-	strb r0,[r1],#0x01
-
-	mov r0, #0x74	;t
-	strb r0,[r1],#0x01
-
-	mov r0, #0x69	;i
-	strb r0,[r1],#0x01
-
-	mov r0, #0x67	;g
-	strb r0,[r1],#0x01
-
-	mov r0, #0x20	;
-	strb r0,[r1],#0x01
-
-	mov r0, #0x6b	;k
-	strb r0,[r1],#0x01
-
-	mov r0, #0x6f	;o
-	strb r0,[r1],#0x01
-
-	mov r0, #0x64	;d
-	strb r0,[r1],#0x01
-
-	mov r0, #0x21	;!
-	strb r0,[r1],#0x01
-
-	mov r0, #0x28	;(
-	strb r0,[r1],#0x01
-
-	mov r4,#(ERROR_STRING & 0xffff) ; läser in pekare till strängen
-	movt r4,#(ERROR_STRING >> 16)
-	sub r5,r1,r4 ; lagrar antal tecken i strängen
+	mov r5,#0x0e ; lagrar antal tecken i strängen
 
 	b labelgetkey 	; Efter all initalisering vill vi starta med getkey
+
+	.align 4
+errmsgstart:
+	.string "Felaktig kod!("
+	.align 2
+
+	.align 4
+errmsgend:
+	.string ")",13,10
+	.align 2
 
 keypressloop:
 	cmp r4,#0x0a
@@ -88,12 +50,22 @@ keypressloop:
 	b labelgetkey
 
 intea:
+
+	mov r0,#(GPIOF_GPIODATA & 0xFFFF)	; Om upplåst vill vi inte kolla om rätt kod slagits in.
+	movt r0,#(GPIOF_GPIODATA >> 16)
+	ldrb r0,[r0]
+	and r0,r0,#0x08 						; Kolla om larm är avaktiverat
+	cmp r0,#0x00
+	bne intef
+
 	cmp r4,#0x0f		; kolla om man tryck på f.
 	bne intef
 	bl checkcode	; Kolla om rätt kod slagits in
 	b labelcheckcode
 
+
 intef:
+
 	cmp r4,#0xff
 	bne intenull
 	bl activatealarm	; Kolla om tiden har gått ut och lås sedan
@@ -113,21 +85,17 @@ labelcheckcode:		; hoppa sedan tillbaka till samma plats
 	
 felkod:
 	bl adderrorcounter
-	mov r4,#(ERROR_STRING & 0xffff) ; läser in pekare till strängen
-	movt r4,#(ERROR_STRING >> 16)
+	adr r4,errmsgstart ; läser in pekare till strängen
+
 	bl printstring
 	bl printerror
 
-	mov r0,#0x29 ;)
-	bl printchar
+	adr r4,errmsgend ; läser in pekare till strängen
 
-	mov r0,#0x0a ; \n
-	bl printchar
-
-	mov r0,#0x0d ; carridge return
-	bl printchar
-
-
+	mov r7,r5 		; Temporärt ändra sträng längden
+	mov r5,#0x03
+	bl printstring
+	mov r5,r7
 	b labelgetkey
 
 labeladdkey:
