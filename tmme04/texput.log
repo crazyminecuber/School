@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2020.1.27)  13 FEB 2020 17:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2020.1.27)  14 FEB 2020 16:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**\documentclass[a3paper,7pt]{article}
+**\documentclass[a1paper,2pt]{article}
 
 *\usepackage[utf8]{inputenc}
 (/usr/share/texmf-dist/tex/latex/base/article.cls
@@ -457,7 +457,7 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
 
 LaTeX Warning: Unused global option(s):
-    [a3paper,7pt].
+    [a1paper,2pt].
 
 (./texput.aux)
 \openout1 = `texput.aux'.
@@ -551,16 +551,16 @@ Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
 * driver: pdftex
-* paper: a3paper
+* paper: a1paper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(2.84544pt, 839.35596pt, 2.84544pt)
-* v-part:(T,H,B)=(2.84544pt, 1189.32486pt, 2.84544pt)
-* \paperwidth=845.04684pt
-* \paperheight=1195.01575pt
-* \textwidth=839.35596pt
-* \textheight=1189.32486pt
+* h-part:(L,W,R)=(2.84544pt, 1684.4028pt, 2.84544pt)
+* v-part:(T,H,B)=(2.84544pt, 2387.18588pt, 2.84544pt)
+* \paperwidth=1690.09369pt
+* \paperheight=2392.87677pt
+* \textwidth=1684.4028pt
+* \textheight=2387.18588pt
 * \oddsidemargin=-69.42455pt
 * \evensidemargin=-69.42455pt
 * \topmargin=-106.42455pt
@@ -584,131 +584,181 @@ Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 
 *
 (Please type a command or say `\end')
+*
+(Please type a command or say `\end')
 *\begin{equation}
 
-*(\frac{l \sin{\left(\theta{\left(t \right)} \right)}}{2} - l \cos{\left(\beta{
-\left(t \right)} \right)})\mathbf{\hat{i}_{Sys}} + (- l \sin{\left(\beta{\left(
-t \right)} \right)} - \frac{l \cos{\left(\theta{\left(t \right)} \right)}}{2})\
-mathbf{\hat{j}_{Sys}}
+*(\frac{l \operatorname{sin}\left(\theta\right)}{2} - l \operatorname{cos}\left
+(\beta\right))\mathbf{\hat{r}_x} + (- l \operatorname{sin}\left(\beta\right) - 
+\frac{l \operatorname{cos}\left(\theta\right)}{2})\mathbf{\hat{r}_y}
 
 *\end{equation}
 
+*
+(Please type a command or say `\end')
 *\begin{equation}
 
-*(\frac{l \sin{\left(\phi{\left(t \right)} \right)}}{2} + l \cos{\left(\beta{\l
-eft(t \right)} \right)})\mathbf{\hat{i}_{Sys}} + (l \sin{\left(\beta{\left(t \r
-ight)} \right)} - \frac{l \cos{\left(\phi{\left(t \right)} \right)}}{2})\mathbf
-{\hat{j}_{Sys}}
+*(\frac{l \operatorname{sin}\left(\phi\right)}{2} + l \operatorname{cos}\left(\
+beta\right))\mathbf{\hat{r}_x} + (l \operatorname{sin}\left(\beta\right) - \fra
+c{l \operatorname{cos}\left(\phi\right)}{2})\mathbf{\hat{r}_y}
 
 *\end{equation}
 
+*
+(Please type a command or say `\end')
 *\begin{equation}
 
-*(l \sin{\left(\beta{\left(t \right)} \right)} \frac{d}{d t} \beta{\left(t \rig
-ht)} + \frac{l \cos{\left(\theta{\left(t \right)} \right)} \frac{d}{d t} \theta
-{\left(t \right)}}{2})\mathbf{\hat{i}_{Sys}} + (\frac{l \sin{\left(\theta{\left
-(t \right)} \right)} \frac{d}{d t} \theta{\left(t \right)}}{2} - l \cos{\left(\
-beta{\left(t \right)} \right)} \frac{d}{d t} \beta{\left(t \right)})\mathbf{\ha
-t{j}_{Sys}}
+*(l \operatorname{sin}\left(\beta\right) \dot{\beta} + \frac{l \operatorname{co
+s}\left(\theta\right) \dot{\theta}}{2})\mathbf{\hat{r}_x} + (\frac{l \operatorn
+ame{sin}\left(\theta\right) \dot{\theta}}{2} - l \operatorname{cos}\left(\beta\
+right) \dot{\beta})\mathbf{\hat{r}_y}
 
 *\end{equation}
 
+*
+(Please type a command or say `\end')
 *\begin{equation}
 
-*(- l \sin{\left(\beta{\left(t \right)} \right)} \frac{d}{d t} \beta{\left(t \r
-ight)} + \frac{l \cos{\left(\phi{\left(t \right)} \right)} \frac{d}{d t} \phi{\
-left(t \right)}}{2})\mathbf{\hat{i}_{Sys}} + (\frac{l \sin{\left(\phi{\left(t \
-right)} \right)} \frac{d}{d t} \phi{\left(t \right)}}{2} + l \cos{\left(\beta{\
-left(t \right)} \right)} \frac{d}{d t} \beta{\left(t \right)})\mathbf{\hat{j}_{
-Sys}}
+*(- l \operatorname{sin}\left(\beta\right) \dot{\beta} + \frac{l \operatorname{
+cos}\left(\phi\right) \dot{\phi}}{2})\mathbf{\hat{r}_x} + (\frac{l \operatornam
+e{sin}\left(\phi\right) \dot{\phi}}{2} + l \operatorname{cos}\left(\beta\right)
+ \dot{\beta})\mathbf{\hat{r}_y}
 
 *\end{equation}
 
+*
+(Please type a command or say `\end')
 *\begin{equation}
 
-*\frac{l \left(\mathbf{\hat{i}_{Sys}} \left(2 \sin{\left(\beta{\left(t \right)}
- \right)} \frac{d^{2}}{d t^{2}} \beta{\left(t \right)} - \sin{\left(\theta{\lef
-t(t \right)} \right)} \left(\frac{d}{d t} \theta{\left(t \right)}\right)^{2} + 
-2 \cos{\left(\beta{\left(t \right)} \right)} \left(\frac{d}{d t} \beta{\left(t 
-\right)}\right)^{2} + \cos{\left(\theta{\left(t \right)} \right)} \frac{d^{2}}{
-d t^{2}} \theta{\left(t \right)}\right) + \mathbf{\hat{j}_{Sys}} \left(2 \sin{\
-left(\beta{\left(t \right)} \right)} \left(\frac{d}{d t} \beta{\left(t \right)}
-\right)^{2} + \sin{\left(\theta{\left(t \right)} \right)} \frac{d^{2}}{d t^{2}}
- \theta{\left(t \right)} - 2 \cos{\left(\beta{\left(t \right)} \right)} \frac{d
-^{2}}{d t^{2}} \beta{\left(t \right)} + \cos{\left(\theta{\left(t \right)} \rig
-ht)} \left(\frac{d}{d t} \theta{\left(t \right)}\right)^{2}\right)\right)}{2}
+*(l \operatorname{sin}\left(\beta\right) \ddot{\beta} - \frac{l \operatorname{s
+in}\left(\theta\right) \dot{\theta}^{2}}{2} + l \operatorname{cos}\left(\beta\r
+ight) \dot{\beta}^{2} + \frac{l \operatorname{cos}\left(\theta\right) \ddot{\th
+eta}}{2})\mathbf{\hat{r}_x} + (l \operatorname{sin}\left(\beta\right) \dot{\bet
+a}^{2} + \frac{l \operatorname{sin}\left(\theta\right) \ddot{\theta}}{2} - l \o
+peratorname{cos}\left(\beta\right) \ddot{\beta} + \frac{l \operatorname{cos}\le
+ft(\theta\right) \dot{\theta}^{2}}{2})\mathbf{\hat{r}_y}
 
 *\end{equation}
 
+*
+(Please type a command or say `\end')
 *\begin{equation}
 
-*\frac{l \left(\mathbf{\hat{i}_{Sys}} \left(- 2 \sin{\left(\beta{\left(t \right
-)} \right)} \frac{d^{2}}{d t^{2}} \beta{\left(t \right)} - \sin{\left(\phi{\lef
-t(t \right)} \right)} \left(\frac{d}{d t} \phi{\left(t \right)}\right)^{2} - 2 
-\cos{\left(\beta{\left(t \right)} \right)} \left(\frac{d}{d t} \beta{\left(t \r
-ight)}\right)^{2} + \cos{\left(\phi{\left(t \right)} \right)} \frac{d^{2}}{d t^
-{2}} \phi{\left(t \right)}\right) + \mathbf{\hat{j}_{Sys}} \left(- 2 \sin{\left
-(\beta{\left(t \right)} \right)} \left(\frac{d}{d t} \beta{\left(t \right)}\rig
-ht)^{2} + \sin{\left(\phi{\left(t \right)} \right)} \frac{d^{2}}{d t^{2}} \phi{
-\left(t \right)} + 2 \cos{\left(\beta{\left(t \right)} \right)} \frac{d^{2}}{d 
-t^{2}} \beta{\left(t \right)} + \cos{\left(\phi{\left(t \right)} \right)} \left
-(\frac{d}{d t} \phi{\left(t \right)}\right)^{2}\right)\right)}{2}
+*(- l \operatorname{sin}\left(\beta\right) \ddot{\beta} - \frac{l \operatorname
+{sin}\left(\phi\right) \dot{\phi}^{2}}{2} - l \operatorname{cos}\left(\beta\rig
+ht) \dot{\beta}^{2} + \frac{l \operatorname{cos}\left(\phi\right) \ddot{\phi}}{
+2})\mathbf{\hat{r}_x} + (- l \operatorname{sin}\left(\beta\right) \dot{\beta}^{
+2} + \frac{l \operatorname{sin}\left(\phi\right) \ddot{\phi}}{2} + l \operatorn
+ame{cos}\left(\beta\right) \ddot{\beta} + \frac{l \operatorname{cos}\left(\phi\
+right) \dot{\phi}^{2}}{2})\mathbf{\hat{r}_y}
 
 *\end{equation}
 
+*VL kropp 1
+
 *\begin{equation}
 
-*(- \frac{g l m_{1} \sin{\left(\theta{\left(t \right)} \right)}}{2})\mathbf{\ha
-t{k}_{Sys}} = (\frac{l^{2} m_{1} \frac{d^{2}}{d t^{2}} \theta{\left(t \right)}}
-{12})\mathbf{\hat{k}_{Sys}}
+*-  \frac{g l m_{1} \operatorname{sin}\left(\theta\right)}{2}\mathbf{\hat{r}_z}
+
 
 *\end{equation}
 
+*HL kropp 1
+
 *\begin{equation}
 
-*\mathbf{\hat{0}}
+*(\frac{l^{2} m_{1} \left(2 \operatorname{sin}\left(\beta - \theta\right) \ddot
+{\beta} + 2 \operatorname{cos}\left(\beta - \theta\right) \dot{\beta}^{2} + \dd
+ot{\theta}\right)}{4} + \frac{l^{2} m_{1} \ddot{\theta}}{12})\mathbf{\hat{r}_z}
+
 
 *\end{equation}
 
+*VL kropp 2
+
 *\begin{equation}
 
-*(\frac{l \sin{\left(\theta{\left(t \right)} \right)}}{2})\mathbf{\hat{i}_{Sys}
-} + (- \frac{l \cos{\left(\theta{\left(t \right)} \right)}}{2})\mathbf{\hat{j}_
-{Sys}}
+*-  \frac{g l m_{2} \operatorname{sin}\left(\phi\right)}{2}\mathbf{\hat{r}_z}
 
 *\end{equation}
 
+*HL kropp 2
+
 *\begin{equation}
 
-*\frac{l m_{1} \left(\mathbf{\hat{i}_{Sys}} \left(2 \sin{\left(\beta{\left(t \r
-ight)} \right)} \frac{d^{2}}{d t^{2}} \beta{\left(t \right)} - \sin{\left(\thet
-a{\left(t \right)} \right)} \left(\frac{d}{d t} \theta{\left(t \right)}\right)^
-{2} + 2 \cos{\left(\beta{\left(t \right)} \right)} \left(\frac{d}{d t} \beta{\l
-eft(t \right)}\right)^{2} + \cos{\left(\theta{\left(t \right)} \right)} \frac{d
-^{2}}{d t^{2}} \theta{\left(t \right)}\right) + \mathbf{\hat{j}_{Sys}} \left(2 
-\sin{\left(\beta{\left(t \right)} \right)} \left(\frac{d}{d t} \beta{\left(t \r
-ight)}\right)^{2} + \sin{\left(\theta{\left(t \right)} \right)} \frac{d^{2}}{d 
-t^{2}} \theta{\left(t \right)} - 2 \cos{\left(\beta{\left(t \right)} \right)} \
-frac{d^{2}}{d t^{2}} \beta{\left(t \right)} + \cos{\left(\theta{\left(t \right)
-} \right)} \left(\frac{d}{d t} \theta{\left(t \right)}\right)^{2}\right)\right)
-}{2}
+*(\frac{l^{2} m_{2} \left(- 2 \operatorname{sin}\left(\beta - \phi\right) \ddot
+{\beta} - 2 \operatorname{cos}\left(\beta - \phi\right) \dot{\beta}^{2} + \ddot
+{\phi}\right)}{4} + \frac{l^{2} m_{2} \ddot{\phi}}{12})\mathbf{\hat{r}_z}
 
 *\end{equation}
 
+*Kropp 1
+
 *\begin{equation}
 
-*\frac{\left(\sin{\left(\beta{\left(t \right)} \right)} \left(\frac{d}{d t} \be
-ta{\left(t \right)}\right)^{2} + \frac{\sin{\left(\theta{\left(t \right)} \righ
-t)} \frac{d^{2}}{d t^{2}} \theta{\left(t \right)}}{2} + \cos{\left(\beta{\left(
-t \right)} \right)} \frac{d}{d t} - \beta{\left(t \right)} + \cos{\left(\theta{
-\left(t \right)} \right)} \left(\frac{d}{d t} \theta{\left(t \right)}\right)^{2
-}\right) \sin{\left(\theta{\left(t \right)} \right)}}{2} + \frac{\left(\sin{\le
-ft(\beta{\left(t \right)} \right)} \frac{d^{2}}{d t^{2}} \beta{\left(t \right)}
- + \frac{\sin{\left(\theta{\left(t \right)} \right)} \left(\frac{d}{d t} \theta
-{\left(t \right)}\right)^{2}}{2} + \cos{\left(\beta{\left(t \right)} \right)} \
-left(\frac{d}{d t} \beta{\left(t \right)}\right)^{2} + \frac{\cos{\left(\theta{
-\left(t \right)} \right)} \frac{d^{2}}{d t^{2}} \theta{\left(t \right)}}{2}\rig
-ht) \cos{\left(\theta{\left(t \right)} \right)}}{2} = 51
+*\frac{g l m_{1} \sin{\left(\theta{\left(t \right)} \right)}}{2} = - \frac{l^{2
+} m_{1} \left(3 \sin{\left(\beta{\left(t \right)} - \theta{\left(t \right)} \ri
+ght)} \frac{d^{2}}{d t^{2}} \beta{\left(t \right)} + 3 \cos{\left(\beta{\left(t
+ \right)} - \theta{\left(t \right)} \right)} \left(\frac{d}{d t} \beta{\left(t 
+\right)}\right)^{2} + 2 \frac{d^{2}}{d t^{2}} \theta{\left(t \right)}\right)}{6
+}
+
+*\end{equation}
+
+*Kropp 2
+
+*\begin{equation}
+
+*\frac{g l m_{2} \sin{\left(\phi{\left(t \right)} \right)}}{2} = - \frac{l^{2} 
+m_{2} \left(- 3 \sin{\left(\beta{\left(t \right)} - \phi{\left(t \right)} \righ
+t)} \frac{d^{2}}{d t^{2}} \beta{\left(t \right)} - 3 \cos{\left(\beta{\left(t \
+right)} - \phi{\left(t \right)} \right)} \left(\frac{d}{d t} \beta{\left(t \rig
+ht)}\right)^{2} + 2 \frac{d^{2}}{d t^{2}} \phi{\left(t \right)}\right)}{6}
+
+*\end{equation}
+
+*Hela kroppen VL
+
+*\begin{equation}
+
+*g l \left(m_{1} - m_{2}\right) \operatorname{cos}\left(\beta\right)\mathbf{\ha
+t{r}_z}
+
+*\end{equation}
+
+*Hela kroppen HL
+
+*\begin{equation}
+
+*\frac{l^{2} \left(m_{1} \operatorname{sin}\left(\beta - \theta\right) \ddot{\t
+heta} - m_{1} \operatorname{cos}\left(\beta - \theta\right) \dot{\theta}^{2} + 
+2 m_{1} \ddot{\beta} - m_{2} \operatorname{sin}\left(\beta - \phi\right) \ddot{
+\phi} + m_{2} \operatorname{cos}\left(\beta - \phi\right) \dot{\phi}^{2} + 2 m_
+{2} \ddot{\beta}\right)}{2}\mathbf{\hat{r}_z}
+
+*\end{equation}
+
+*phi dd
+
+*\begin{equation}
+
+*\frac{d^{2}}{d t^{2}} \beta{\left(t \right)}
+
+*\end{equation}
+
+*theta dd
+
+*\begin{equation}
+
+*\frac{d^{2}}{d t^{2}} \phi{\left(t \right)}
+
+*\end{equation}
+
+*beta dd
+
+*\begin{equation}
+
+*\frac{d^{2}}{d t^{2}} \theta{\left(t \right)}
 
 *\end{equation}
 
@@ -719,26 +769,25 @@ ht) \cos{\left(\theta{\left(t \right)} \right)}}{2} = 51
 Here is how much of TeX's memory you used:
  7261 strings out of 492167
  101828 string characters out of 6131558
- 211946 words of memory out of 5000000
+ 207950 words of memory out of 5000000
  11517 multiletter control sequences out of 15000+600000
  5784 words of font info for 20 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 45i,7n,45p,936b,219s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 45i,6n,45p,541b,219s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/
 texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texmf-dist/font
 s/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public
 /amsfonts/cm/cmbx7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 ex10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr
-/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmr5.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></u
-sr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf
--dist/fonts/type1/public/cm-super/sfrm1000.pfb>
-Output written on texput.pdf (1 page, 100576 bytes).
+/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmr5.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></
+usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb>
+Output written on texput.pdf (1 page, 93597 bytes).
 PDF statistics:
- 53 PDF objects out of 1000 (max. 8388607)
- 38 compressed objects within 1 object stream
+ 49 PDF objects out of 1000 (max. 8388607)
+ 35 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
