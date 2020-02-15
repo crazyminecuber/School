@@ -4,12 +4,14 @@ from sympy.physics.vector import *
 from sympy import * 
 
 def print_as_eqn(thing, word=""):
+    print("")
     print(word)
     print(r"\begin{equation}")
     print(latex(thing))
     print(r"\end{equation}")
+    print("")
 
-print(r"\documentclass[a1paper,2pt]{article}")
+print(r"\documentclass[a3paper,2pt]{article}")
 print(r"\usepackage[utf8]{inputenc}")
 print(r"\usepackage{pdfpages}")
 print(r"\usepackage[swedish]{babel}")
@@ -50,58 +52,95 @@ B_G1 = B_G1x*R.x + B_G1y*R.y + 0*R.z
 
 a_g1, a_g2 = symbols("a_g1 a_g2")
 
-print_as_eqn(B + B_G1)
-print_as_eqn(C + C_G2)
+r_g1= (B + B_G1)
+r_g2= (C + C_G2)
 
-print_as_eqn((B + B_G1).diff(t,R))
-print_as_eqn((C + C_G2).diff(t,R))
+v_g1 = (B + B_G1).diff(t,R)
+v_g2 = (C + C_G2).diff(t,R)
 
 a_g1 = (B + B_G1).diff(t,R).diff(t,R)
 a_g2 = (C + C_G2).diff(t,R).diff(t,R)
-print_as_eqn(a_g1)
-print_as_eqn(a_g2)
+print_as_eqn(r_g1, "rg1")
+print_as_eqn(r_g2, "rg2")
+print_as_eqn(v_g1, "vg1")
+print_as_eqn(v_g2, "vg2")
+print_as_eqn(a_g1, "ag1")
+print_as_eqn(a_g2, "ag2")
 
-kropp11 = (-B_G1).cross(m1*g*R.y).simplify()
-kropp12 = ((m1 * l ** 2) / 12) * theta.diff(t).diff(t) * R.z + B_G1.cross(m1*a_g1).simplify()
-kropp1 = Eq(dot(kropp11,R.z),dot(kropp12, R.z)).simplify()
-kropp21 = -C_G2.cross(m2*g*R.y).simplify()
-kropp22 = ((m2 * l **2) / 12) * phi.diff(t).diff(t)*R.z + C_G2.cross(m2 * a_g2).simplify()
-kropp2 = Eq(dot(kropp21,R.z),dot(kropp22, R.z)).simplify()
+print_as_eqn(v_g1.magnitude(), "absvg1")
+print_as_eqn(v_g2.magnitude(), "absvg2")
 
-hela1 = ((-B).cross(m1*g*R.y) - C.cross(m2*g*R.y)).simplify()
-hela2 = (B.cross(m1*a_g1) + C.cross(m2*a_g2)).simplify()
+print_as_eqn(v_g1.magnitude().simplify(), "Simple absvg1")
+print_as_eqn(v_g2.magnitude().simplify(), "Simple absvg2")
 
-
-hela = Eq(dot(hela1,R.z),dot(hela2, R.z)).simplify()
+print(r"\newpage")
+kropp11 = (-B_G1).cross(m1*g*R.y)
+kropp11_sim = kropp11.simplify()
+kropp12 = ((m1 * l ** 2) / 12) * theta.diff(t).diff(t) * R.z + B_G1.cross(m1*a_g1)
+kropp12_sim = kropp12.simplify()
+kropp1 = Eq(dot(kropp11_sim,R.z),dot(kropp12_sim, R.z))
+kropp1_sim = kropp1.simplify()
 
 print_as_eqn(kropp11,'VL kropp 1')
 print_as_eqn(kropp12,'HL kropp 1')
+print_as_eqn(kropp11_sim,'simple VL kropp 1')
+print_as_eqn(kropp12_sim,'simple HL kropp 1')
+print_as_eqn(kropp1,'kropp1')
+print_as_eqn(kropp1_sim,'simple kropp1')
+
+kropp21 = -C_G2.cross(m2*g*R.y).simplify()
+kropp21_sim = kropp21.simplify()
+kropp22 = ((m2 * l **2) / 12) * phi.diff(t).diff(t)*R.z + C_G2.cross(m2 * a_g2).simplify()
+kropp22_sim = kropp22.simplify()
+kropp2 = Eq(dot(kropp21_sim,R.z),dot(kropp22_sim, R.z))
+kropp2_sim = kropp2.simplify()
+
 print_as_eqn(kropp21,'VL kropp 2')
 print_as_eqn(kropp22,'HL kropp 2')
-print_as_eqn(kropp1,'Kropp 1')
-print_as_eqn(kropp2,'Kropp 2')
-print_as_eqn(hela1,'Hela kroppen VL')
-print_as_eqn(hela2,'Hela kroppen HL')
-solved = solve((kropp1,kropp2,hela),phi.diff(t).diff(t), theta.diff(t).diff(t), beta.diff(t).diff(t))
-#jprint(solved)
-lista = []
-for key, value in solved.items():
-    temp = [key,value]
-    lista.append(temp)
+print_as_eqn(kropp21_sim,'simple VL kropp 2')
+print_as_eqn(kropp22_sim,'simple HL kropp 2')
+print_as_eqn(kropp2,'kropp2')
+print_as_eqn(kropp2_sim,'simple kropp2')
 
-#print(lista)
-print_as_eqn(lista[0][0], "phi dd")
-print_as_eqn(lista[0][1].simplify(), "phi dd")
-#print_as_eqn(lista[0][2], "phi dd")
-#print_as_eqn(lista[0][3], "phi dd")
-#print_as_eqn(lista[0][4], "phi dd")
-#print_as_eqn(lista[0][5], "phi dd")
-#print("")
-#print(lista)
-#print_as_eqn(theta_dd.simplify(), "theta dd")
-#print_as_eqn(beta_dd.simplify(), "beta dd")
-#print_as_eqn(a_g1.dot(3*R.y))
-#print_as_eqn(sin(theta)/2 * (Derivative((beta),t,t)*(-cos(beta))+(Derivative(beta,t))**2*sin(beta)+Derivative(theta,t,t)/2 *(sin(theta)/2)+(Derivative(theta,t))**2*cos(theta)) + cos(theta)/2*(Derivative(beta,t,t)*sin(beta)-(Derivative(beta,t))**2*cos(beta)+Derivative(theta,t,t)/2*cos(theta)+(Derivative(theta,t))**2*sin(theta)/2))
-#print_as_eqn(solve(kropp1, l))
-#test
+hela1 = ((-B).cross(m1*g*R.y) - C.cross(m2*g*R.y))
+hela2 = (B.cross(m1*a_g1) + C.cross(m2*a_g2))
+hela1_sim = hela1.simplify() 
+hela2_sim = hela2.simplify() 
+
+hela = Eq(dot(hela1_sim,R.z),dot(hela2_sim, R.z))
+hela_sim = hela.simplify()
+
+print_as_eqn(hela1,'VL hela')
+print_as_eqn(hela2,'HL hela')
+print_as_eqn(hela1_sim,'simple VL hela')
+print_as_eqn(hela2_sim,'simple HL hela')
+print_as_eqn(hela,'hela')
+print_as_eqn(hela_sim,'simple hela')
+
+
+T1, T2, Vg1, Vg2 = symbols("T1 T2 Vg1 Vg2")
+T1 = m1/8 * l**(2)* abs(4*sin(beta-theta)*beta.diff(t)*theta.diff(t) + 4*(beta.diff(t)**2 + theta.diff(t)**2)) + m1/24*l**2*theta.diff(t)**2;
+T2 = m2/8 * l**2* abs(-4*sin(beta - phi)*beta.diff(t)*phi.diff(t) + 4*(beta.diff(t)**2+phi.diff(t)**2)) +m2/24*l**2*phi.diff(t)**2;
+Vg1 = m1 * g * (-l*sin(beta) - (1 / 2)*l*cos(theta));
+Vg2 = m2 * g * (l*sin(beta) - (1 / 2)*l*cos(phi));
+
+energi = T1 + T2 + Vg1 + Vg2;
+
+print_as_eqn(T1,'T1')
+print_as_eqn(T2,'T2')
+print_as_eqn(Vg1,'Vg1')
+print_as_eqn(Vg2,'Vg2')
+
+print_as_eqn(energi, "energi")
+
+A = Matrix([[sin(beta-theta),0,2/3],
+    [-sin(beta-phi),2/3,0],
+    [2*(m1+m2),-m2*sin(beta-phi),m1*sin(beta-theta)]])
+b = Matrix([-g/l * sin(theta) - cos(beta-theta) * (beta.diff(t))**2,
+    -g/l * sin(phi) + cos(beta-phi) * (beta.diff(t))**2,
+    2* g/l * (m1-m2) * cos(beta) + m1 * cos(beta-theta) * theta.diff(t)**2 - m2 * cos(beta-phi) * (phi.diff(t))**2])
+print_as_eqn(A, "A") 
+print_as_eqn(b, "b") 
+#solved = solve((kropp1,kropp2,hela),phi.diff(t).diff(t), theta.diff(t).diff(t), beta.diff(t).diff(t))
+
 print(r"\end{document}")
