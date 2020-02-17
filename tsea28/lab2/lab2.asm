@@ -166,7 +166,7 @@ main:
 
     printloop:
     bl SKBAK
-    mov r1, 100
+    mov r1, #1000
     bl DELAY
     b printloop
     
