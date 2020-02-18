@@ -149,7 +149,7 @@ main:
     bl inituart
     bl initGPIOB
     bl initGPIOF
-    mov r0,0x00010203
+    mov r0,0x00010203 ; initiera register
     mov r1,0x10111213
     mov r2,0x20212223
     mov r3,0x30313233
@@ -162,9 +162,13 @@ main:
     mov r10,0xa0a1a2a3
     mov r11,0xb0b1b2b3
     mov r12,0xc0c1c2c3
+    CPSIE I ; tillåt avbrott
+
+    printloop:
     bl SKBAK
-    mov r1, 100
+    mov r1, #1000
     bl DELAY
+    b printloop
     
     .align 0x100    ; Place interrupt routine for GPIO port D
                     ; at an adress that ends with two zeros

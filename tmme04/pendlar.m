@@ -29,14 +29,18 @@ title("Angle plot")
 xlabel("time (s)")
 ylabel("Angel (deg)")
 hold on
-h1=plot(t_vec,rad2deg(bet),"r");  %x1
-h2=plot(t_vec,rad2deg(phi),"g") ; %x1_dot
-h3=plot(t_vec,rad2deg(theta),"b") ; %x2
+h1=plot(t_vec,(180/pi)*bet,"r");  %x1
+h2=plot(t_vec,(180/pi)*phi,"g") ; %x1_dot
+h3=plot(t_vec,(180/pi)*theta,"b") ; %x2
 legend([h1,h2,h3],"\beta","\phi", "\theta");
 
 %energi
-T1 = m1/8 * l^(2).*abs(4*sin(bet-theta).*bet_dot.*theta_dot + 4*(bet_dot.^2 + theta_dot.^2)) + m1/24*l^2.*theta_dot.^2;
-T2 = m2/8 * l^2.*abs(-4*sin(bet - phi).*bet_dot.*phi_dot + 4*(bet_dot.^2+phi_dot.^2)) +m2/24*l^2.*phi_dot.^2;
+T1 = m1/2 * l^(2).* ...
+    ( abs(sin(bet).*bet_dot + cos(theta).*theta_dot/2) + abs(sin(theta).*theta_dot/2 - cos(bet).*bet_dot)).^2 ...
+    + m1/24*l^2.*theta_dot.^2;
+T2 = m2/2 * l^2.* ...
+    ( abs(-sin(bet).*bet_dot + cos(phi).*phi_dot/2) + abs(sin(phi).*phi_dot/2 + cos(bet).*bet_dot) ).^2 ...
+    + m2/24*l^2.*phi_dot.^2;
 Vg1 = m1 * g * (-l*sin(bet) - (1 / 2)*l*cos(theta));
 Vg2 = m2 * g * (l*sin(bet) - (1 / 2)*l*cos(phi));
 energi = T1 + T2 + Vg1 + Vg2;
