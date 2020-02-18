@@ -17,7 +17,6 @@ options = odeset("RelTol",1e-6,"AbsTol",1e-10);
 
 % Loser for frekvensen 10
 [t_vec,Y] = ode45(@ekvationer, [0 t_max], [beta_0 beta_dot_0 phi_0 phi_dot_0 theta_0 theta_dot_0], options, l, g, m1, m2);
-Y = rad2deg(Y);
 bet = Y(:,1);
 bet_dot = Y(:,2);
 phi = Y(:,3);
