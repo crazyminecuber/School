@@ -147,25 +147,45 @@ Righttextend     .string "              SLUT h",0xf6, "ger",13,10,0
 
 main:
     bl inituart
-    bl initGPIOB
+    bl initGPIOD
     bl initGPIOF
-    mov r0,0x00010203 ; initiera register
-    mov r1,0x10111213
-    mov r2,0x20212223
-    mov r3,0x30313233
-    mov r4,0x40414243
-    mov r5,0x50515253
-    mov r6,0x60616263
-    mov r7,0x70717273
-    mov r8,0x80818283
-    mov r9,0x90919293
-    mov r10,0xa0a1a2a3
-    mov r11,0xb0b1b2b3
-    mov r12,0xc0c1c2c3
+    bl initint
+    mov  r1,#(RCGCGPIO & 0xffff)
+    movt r1,#(RCGCGPIO >> 16)
+
+    mov r0,#(0x00010203 & 0xffff) 
+    movt r0,#(0x00010203 >> 16) 
+    mov r1,#(0x10111213 & 0xffff)
+    movt r1,#(0x10111213 >> 16)
+    mov r2,#(0x20212223 & 0xffff)
+    movt r2,#(0x20212223 >> 16)
+    mov r3,#(0x30313233 & 0xffff)
+    movt r3,#(0x30313233 >> 16)
+    mov r4,#(0x40414243 & 0xffff)
+    movt r4,#(0x40414243 >> 16)
+    mov r5,#(0x50515253 & 0xffff)
+    movt r5,#(0x50515253 >> 16)
+    mov r6,#(0x60616263 & 0xffff)
+    movt r6,#(0x60616263 >> 16)
+    mov r7,#(0x70717273 & 0xffff)
+    movt r7,#(0x70717273 >> 16)
+    mov r8,#(0x80818283 & 0xffff)
+    movt r8,#(0x80818283 >> 16)
+    mov r9,#(0x90919293 & 0xffff)
+    movt r9,#(0x90919293 >> 16)
+    mov r10,#(0xa0a1a2a3 & 0xffff)
+    movt r10,#(0xa0a1a2a3 >> 16)
+    mov r11,#(0xb0b1b2b3 & 0xffff)
+    movt r11,#(0xb0b1b2b3 >> 16)
+    mov r12,#(0xc0c1c2c3 & 0xffff)
+    movt r12,#(0xc0c1c2c3 >> 16)
+
     CPSIE I ; tillåt avbrott
 
-    printloop:
+printloop:
+	CPSID I  ;Uppgift 3
     bl SKBAK
+    CPSIE I  ; Uppgift 3
     mov r1, #1000
     bl DELAY
     b printloop
@@ -178,6 +198,15 @@ main:
 ;*
 intgpiod:
 
+	mov r0, #0x80			; Ladda 0 till minnessaddressen för knappen.
+	mov r1, #(GPIOD_GPIOICR & 0xffff)
+	movt r1, #(GPIOD_GPIOICR >> 16)
+	str r0,[r1]
+	push {lr}
+	bl SKAVH ; Printa avbrott höger
+	pop {lr}
+	bx lr
+
                     ; Here is the interrupt routine triggered by port D
 
 
@@ -188,7 +217,14 @@ intgpiod:
 ;* Place your interrupt routine for GPIO port F here
 ;*
 intgpiof:
-                     ; Here is the interrupt routine triggered by port F
+    mov r0, #0x10			; Ladda 0 till minnessaddressen för knappen.
+	mov r1, #(GPIOF_GPIOICR & 0xffff)
+	movt r1, #(GPIOF_GPIOICR >> 16)
+	str r0,[r1]
+	push {lr}
+	bl SKAVV ; Printa avbrott höger
+	pop {lr}
+	bx lr              ; Here is the interrupt routine triggered by port F
 
 
 
