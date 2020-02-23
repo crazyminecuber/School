@@ -1,0 +1,10 @@
+printf "%d\n", card(NODES) > tour.dat;
+printf {i in NODES}: "%d  %d\n", Node_Pos[i,2], 
+max {j in NODES} Node_Pos[j,1] - Node_Pos[i,1] > tour.dat;
+printf "\n" > tour.dat;
+printf {(i,j) in EDGES}: "%d %d %f \n", i, j, x[i,j] > tour.dat;
+printf "\n %8.2f",totallength > tour.dat;
+close tour.dat;
+shell '/courses/TAOP07/bin/tourgraf';
+shell 'gv toursol.eps &';
+shell 'sleep 1';     
