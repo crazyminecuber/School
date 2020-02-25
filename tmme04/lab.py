@@ -119,8 +119,8 @@ print_as_eqn(hela_sim,'simple hela')
 
 
 T1, T2, Vg1, Vg2 = symbols("T1 T2 Vg1 Vg2")
-T1 = m1/8 * l**(2)* abs(4*sin(beta-theta)*beta.diff(t)*theta.diff(t) + 4*(beta.diff(t)**2 + theta.diff(t)**2)) + m1/24*l**2*theta.diff(t)**2;
-T2 = m2/8 * l**2* abs(-4*sin(beta - phi)*beta.diff(t)*phi.diff(t) + 4*(beta.diff(t)**2+phi.diff(t)**2)) +m2/24*l**2*phi.diff(t)**2;
+T1 = m1/8 * l**(2)* abs(4*sin(beta-theta)*beta.diff(t)*theta.diff(t) + 4*beta.diff(t)**2 + theta.diff(t)**2) + m1/24*l**2*theta.diff(t)**2;
+T2 = m2/8 * l**2* abs(-4*sin(beta - phi)*beta.diff(t)*phi.diff(t) + 4*beta.diff(t)**2+phi.diff(t)**2) +m2/24*l**2*phi.diff(t)**2;
 Vg1 = m1 * g * (-l*sin(beta) - (1 / 2)*l*cos(theta));
 Vg2 = m2 * g * (l*sin(beta) - (1 / 2)*l*cos(phi));
 
