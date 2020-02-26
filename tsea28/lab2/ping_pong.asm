@@ -374,7 +374,7 @@ intgpiod:
     str r1,[r0]
 	bx lr
 felhoger:
-	mov r0,#(SERVE & 0xffff) ; Sätt serve = 0xff (Vänster får påäng av main senare.)
+	mov r0,#(SERVE & 0xffff) ; Sätt serve = 0xff (Vänster får poäng av main senare.)
     movt r0,#(SERVE >> 16)
     mov r1,#0xff
     str r1,[r0]
@@ -411,7 +411,7 @@ intgpiof:
     str r1,[r0]
 	bx lr
 felvanster:
-	mov r0,#(SERVE & 0xffff) ; Sätt serve = 0xff (Höger får påäng av main senare.)
+	mov r0,#(SERVE & 0xffff) ; Sätt serve = 0xff (Höger får poäng av main senare.)
     movt r0,#(SERVE >> 16)
     mov r1,#0xff
     str r1,[r0]

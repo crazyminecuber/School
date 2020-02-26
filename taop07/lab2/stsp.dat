@@ -1,0 +1,8 @@
+set NODES := 1;
+param: EDGES: c :=
+;
+param Node_Pos :=
+1 1   -1
+1 2   -1
+;
+
