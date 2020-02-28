@@ -124,7 +124,7 @@ GPIOF_GPIOICR	.equ	0x4002541c ; rensa avbrottrequest port F
 ;*****************************************************
 
 TIME	.equ	0x20001000 ; Start address för tid 4byte
-MUXDIGIT	.equ	0x20001100 ; Start address för tid 4byte
+MUXDIGIT	.equ	0x20001100 ; 0-3 vilken siffra som muxas
 	
 	
 ;*****************************************************
@@ -135,13 +135,13 @@ MUXDIGIT	.equ	0x20001100 ; Start address för tid 4byte
 	
             .align 4    ; make sure these constants start on 4 byte boundary
 SJUSEGTAB	.byte 0xfc	; '0 
-		.byte 0x06	; '1 
+		.byte 0x60	; '1
 		.byte 0xda	; '2 
 		.byte 0xf2	; '3 
 		.byte 0x66	; '4 
 		.byte 0xb6	; '5 
 		.byte 0xbe	; '6 
-		.byte 0xb0	; '7 
+		.byte 0xe0	; '7
 		.byte 0xfe	; '8 
 		.byte 0xe6	; '9 
 
@@ -161,6 +161,7 @@ main:
     bl initGPIOD
     bl initGPIOF
     bl initGPIOB
+    bl initGPIOE
     bl initint
     mov r0,#(MUXDIGIT & 0xffff) ; Sätt muxad siffra till 0
     movt r0,#(MUXDIGIT >> 16) 
@@ -169,12 +170,14 @@ main:
 
     mov r0,#(TIME & 0xffff)	; Sätt tid till 0
     movt r0,#(TIME >> 16) 
-	mov r1,#0x00
-	str r1,[r0],#1
-	str r1,[r0],#1
-	str r1,[r0],#1
-	str r1,[r0]
-	
+	mov r1,#0 ;Ladda kod för sifran 0 till r1
+	str r1,[r0],#0
+	mov r1,#0 ;Ladda kod för sifran 0 till r1
+	str r1,[r0],#0
+	mov r1,#0 ;Ladda kod för sifran 0 till r1
+	str r1,[r0],#0
+	mov r1,#0 ;Ladda kod för sifran 0 till r1
+	str r1,[r0],#0
 
 
     mov r0,#(0x00010203 & 0xffff) 
@@ -220,7 +223,37 @@ infinitenone:
 intgpiod:
 
     CPSID I ; tillåt inte avbrott
-	ldr 		
+ 	mov r0, #0x80			; Återställ avbrott
+	mov r1, #(GPIOD_GPIOICR & 0xffff)
+	movt r1, #(GPIOD_GPIOICR >> 16)
+	str r0,[r1]
+	
+	mov r0, #(TIME & 0xffff)	;Address för första address på tid
+	movt r0, #(TIME >> 16)
+
+	mov r12, #(MUXDIGIT & 0xffff)
+	movt r12, #(MUXDIGIT >> 16)
+	ldrb r1,[r12]	; Sifferposition
+	
+	ldrb r0,[r0,r1]	;Siffervärde (Ej kodat)
+	adr r2,SJUSEGTAB
+	ldrb r0,[r2,r0] ;Ladda kodning för siffran
+
+
+	mov r2, #(GPIOE_GPIODATA & 0xffff)
+	movt r2, #(GPIOE_GPIODATA >> 16)
+	strb r1,[r2]		; Skriv ut vilken sifferpostion som muxas
+
+	mov r2, #(GPIOB_GPIODATA & 0xffff)
+	movt r2, #(GPIOB_GPIODATA >> 16)
+	strb r0,[r2]		; Skriv ut vilken siffra som muxas
+	
+	add r1,#1 
+	cmp r1,#4
+	bne gpiodexit
+	mov r1,#0	
+gpiodexit:
+ 	strb r1,[r12]
     CPSIE I ; tillåt avbrott
 	bx lr
 
@@ -235,8 +268,47 @@ intgpiod:
 ;*
 intgpiof:
     CPSID I ; tillåt inte avbrott
-	
-    mov r0, #0x10			; Ladda 0 till minnessaddressen för knappen.
+	mov r0, #0x10			; Äterställ avbrott
+	mov r1, #(GPIOF_GPIOICR & 0xffff)
+	movt r1, #(GPIOF_GPIOICR >> 16)
+	str r0,[r1]	
+
+	push {r4,r5,r6,r7}
+	mov r0, #(TIME & 0xffff)
+	movt r0, #(TIME >> 16)
+	ldrb r4,[r0],#1
+	ldrb r5,[r0],#1
+	ldrb r6,[r0],#1
+	ldrb r7,[r0]
+
+	add r4,r4,#1
+	cmp r4,#10	;Kollar om sista sekundsiffran blev för stor
+	bne exitgpiof
+	mov r4,#0
+	add r5,#1
+	cmp r5,#6	;Kollar om först sekundsiffran blev för stor
+	bne exitgpiof
+
+	mov r5,#0
+	add r6,r6,#1
+	cmp r6,#10	;Kollar om sista minutsifran blev för stor
+	bne exitgpiof
+	mov r6,#0
+	add r7,#1
+	cmp r7,#6	;Kollar om först minutsifran blev för stor
+	bne exitgpiof
+	mov r7,#0
+
+exitgpiof:
+
+	mov r0, #(TIME & 0xffff)
+	movt r0, #(TIME >> 16)
+	strb r4,[r0],#1
+	strb r5,[r0],#1
+	strb r6,[r0],#1
+	strb r7,[r0]
+
+	pop {r4,r5,r6,r7}
 
     CPSIE I ; tillåt avbrott
 	bx lr              ; Here is the interrupt routine triggered by port F
