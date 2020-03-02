@@ -13,9 +13,9 @@ var z {i in NODESP} >= 0, <=1; # Beslutsvariabel
 
 
 # Låt målfunktionsvärdet i separationsproblemet heta Slack
-maximize Slack: 1 + (sum {e in EDGESP} cx[e] * w[e]) - (sum {i in NODESP} z[i]);
+maximize Slack: 1 + (sum {(i,j) in EDGESP} cx[i,j] * w[i,j]) - (sum {i in NODESP} z[i]);
 
-subject to cond1{(i,j) in EDGESP}: w[(i,j)] <= z[i]; # Mer krav på antal vilkor?(i,j) /Oskar
-subject to cond2{(i,j) in EDGESP}: w[(i,j)] <= z[j]; 
-subject to cond3{(i,j) in EDGESP}: w[(i,j)] <= z[i] + z[j] - 1; 
+subject to cond1{(i,j) in EDGESP}: w[i,j] <= z[i]; # Mer krav på antal vilkor?(i,j) /Oskar
+subject to cond2{(i,j) in EDGESP}: w[i,j] <= z[j]; 
+subject to cond3{(i,j) in EDGESP}: w[i,j] >= z[i] + z[j] - 1; 
 subject to fixnod: z[k] == 1;

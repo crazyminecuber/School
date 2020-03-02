@@ -2,7 +2,7 @@ reset;
 option solver cplex;
 
 model setcover.mod;
-data setcover1.dat;
+data setcover2.dat;
 
 solve setcover;
 
