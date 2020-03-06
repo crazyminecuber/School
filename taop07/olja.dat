@@ -1,0 +1,106 @@
+set PRODUKTER :=   BITUMEN55  BITUMEN180;
+set RAFFINADERIER := NYNASHAMN  GOTEBORG ANTWERPEN  LIVERPOOL  DUNDEE;
+set TERMINALER := BODEN SKELLEFTEA HARNOSAND BOLLNAS VASTERAS OREBRO NORRKOPING OSKARSHAMN MALMO MOLNDAL KOPENHAMN ARHUS SANDEFJORD TALINN SZCZECIN BRYSSEL GLASGOW ABERYSTWYTH NANTES PONTEVENDRA;
+
+param milkostn := 20;
+
+param   avstand (tr):  NYNASHAMN  GOTEBORG ANTWERPEN  LIVERPOOL  DUNDEE :=
+BODEN                    146       171       428        607       420
+SKELLEFTEA               128       153       408        586       400
+HARNOSAND                 57        75       357        566       357        
+BOLLNAS                   34        63       321        530       321
+VASTERAS                  24        40       296        498       284
+OREBRO                    17        30       250        430       269
+NORRKOPING                 8        35       270        450       278
+OSKARSHAMN                 9        43       245        410       260
+MALMO                     36        20       210        380       221
+MOLNDAL                   53         1       179        357       160
+KOPENHAMN                 42        26       207        379       219
+ARHUS                     49        17       198        360       200        
+SANDEFJORD                70        31       156        339       267
+TALINN                    74       220       350        579       365        
+SZCZECIN                  85        96       250        464       257
+BRYSSEL                  328       189         7        207       132
+GLASGOW                  307       168       145         64        13
+ABERYSTWYTH              410       347       210          5        72
+NANTES                   528       371        96        157       314
+PONTEVENDRA              561       402       228        205       352;
+
+param raffkostn :  NYNASHAMN  GOTEBORG   ANTWERPEN   LIVERPOOL    DUNDEE :=
+BITUMEN55            4200       4300       4340        4320        4300  
+BITUMEN180           4300       4320       4270        4340        4290;
+
+param raffkap :=  NYNASHAMN 500  GOTEBORG 390 ANTWERPEN 500  LIVERPOOL 340  DUNDEE 320;
+
+param pris (tr) :  BITUMEN55 BITUMEN180 :=
+BODEN                8320      8440
+SKELLEFTEA           8320      8412
+HARNOSAND            8312      8445
+BOLLNAS              8304      8427
+VASTERAS             8300      8456
+OREBRO               8349      8414
+NORRKOPING           8331      8443
+OSKARSHAMN           8323      8423
+MALMO                8321      8451
+MOLNDAL              8343      8440
+KOPENHAMN            8352      8428
+ARHUS                8319      8460
+SANDEFJORD           8326      8412
+TALINN               8378      8429 
+SZCZECIN             8312      8431
+BRYSSEL              8314      8413
+GLASGOW              8347      8428 
+ABERYSTWYTH          8339      8419
+NANTES               8323      8432
+PONTEVENDRA          8341      8420;
+
+param undre (tr):  BITUMEN55   BITUMEN180 :=
+BODEN                 32         34
+SKELLEFTEA            21         12
+HARNOSAND             12         45
+BOLLNAS                4         27
+VASTERAS               0         56
+OREBRO                49         14
+NORRKOPING            31          3
+OSKARSHAMN            23         23
+MALMO                 21         51
+MOLNDAL               43          0
+KOPENHAMN             52         28
+ARHUS                 45         34
+SANDEFJORD            56         12
+TALINN                78         65 
+SZCZECIN             109         87
+BRYSSEL               45         68
+GLASGOW               87         68 
+ABERYSTWYTH           79         54
+NANTES               101         82
+PONTEVENDRA          141        120;
+
+param ovre (tr):  BITUMEN55   BITUMEN180 :=
+BODEN                 36         37
+SKELLEFTEA            24         15
+HARNOSAND             17         46
+BOLLNAS                6         29
+VASTERAS               2         59
+OREBRO                52         17
+NORRKOPING            35          7
+OSKARSHAMN            27         29
+MALMO                 24         57
+MOLNDAL               45          4
+KOPENHAMN             62         38
+ARHUS                 46         44
+SANDEFJORD            59         17
+TALINN                79         68 
+SZCZECIN             129         89
+BRYSSEL               49         69
+GLASGOW               91         71 
+ABERYSTWYTH           89         56
+NANTES               106         89
+PONTEVENDRA          149        121;
+
+
+
+
+
+
+

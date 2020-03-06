@@ -1,0 +1,10 @@
+reset;
+
+option solver cplex;
+
+model stsp.mod;
+data  stsp.dat;
+
+solve stsp;
+
+display x;

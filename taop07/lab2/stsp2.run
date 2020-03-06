@@ -1,0 +1,32 @@
+reset;
+
+option solver cplex;
+
+model stsp.mod;
+data  stsp.dat;
+
+model stspvalid.mod;
+
+solve stsp;
+
+display x;
+
+# Döp variabeln till x, målfunktionskoefficienterna
+# till separationsproblemet blir då cx
+
+let {(i,j) in EDGES} cx[i,j] := x[i,j];
+
+for {n in NODESP}
+{
+ let k := n;
+
+ # Låt målfunktionsvärdet i separationsproblemet vara Slack
+
+ solve stspvalid;
+ if (Slack > 0) then {
+   display z;
+   break;  # Bara nödvändigt att finna första bivillkoret
+ }
+}
+
+include drawtour; #program som ritar ut turen på skärmen

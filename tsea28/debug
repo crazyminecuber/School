@@ -1,0 +1,48 @@
+Description	Resource	Path	Location	Type
+[E0001] Address must be defined in the current section	lab1.asm	/LAB1	line 88	C/C++ Problem
+[E0001] Address must be defined in the current section	lab1.asm	/LAB1	line 93	C/C++ Problem
+[E0001] Address must be defined in the current section	lab1.asm	/LAB1	line 97	C/C++ Problem
+[E0001] Undefined symbol	lab1.asm	/LAB1	line 88	C/C++ Problem
+[E0001] Undefined symbol	lab1.asm	/LAB1	line 93	C/C++ Problem
+[E0001] Undefined symbol	lab1.asm	/LAB1	line 97	C/C++ Problem
+[E0001] Undefined symbol	lab1.asm	/LAB1	line 107	C/C++ Problem
+[E0002] Illegal mnemonic specified	lab1.asm	/LAB1	line 95	C/C++ Problem
+[E0002] Illegal mnemonic specified	lab1.asm	/LAB1	line 109	C/C++ Problem
+[E0002] Illegal mnemonic specified	lab1.asm	/LAB1	line 111	C/C++ Problem
+[E0003] Only labels and comments may begin in the first column. Make sure that the label name is not a reserved keyword.	lab1.asm	/LAB1	line 95	C/C++ Problem
+[E0003] Only labels and comments may begin in the first column. Make sure that the label name is not a reserved keyword.	lab1.asm	/LAB1	line 109	C/C++ Problem
+[E0003] Only labels and comments may begin in the first column. Make sure that the label name is not a reserved keyword.	lab1.asm	/LAB1	line 111	C/C++ Problem
+[E0003] Unexpected trailing operand(s)	lab1.asm	/LAB1	line 250	C/C++ Problem
+[E0003] Unexpected trailing operand(s)	lab1.asm	/LAB1	line 278	C/C++ Problem
+[E0004] Illegal operand	lab1.asm	/LAB1	line 88	C/C++ Problem
+[E0004] Illegal operand	lab1.asm	/LAB1	line 93	C/C++ Problem
+[E0004] Illegal operand	lab1.asm	/LAB1	line 97	C/C++ Problem
+[E0004] Immediate cannot be greater than 12-bits	lab1.asm	/LAB1	line 76	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 215	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 216	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 217	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 218	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 219	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 220	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 222	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 236	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 246	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 247	C/C++ Problem
+[E0004] Invalid addressing mode	lab1.asm	/LAB1	line 309	C/C++ Problem
+[E0004] Invalid Immediate operand	lab1.asm	/LAB1	line 31	C/C++ Problem
+[E0004] Invalid operand	lab1.asm	/LAB1	line 80	C/C++ Problem
+[E0004] Invalid operand	lab1.asm	/LAB1	line 83	C/C++ Problem
+[E0004] Invalid operand	lab1.asm	/LAB1	line 269	C/C++ Problem
+[E0004] Invalid operand	lab1.asm	/LAB1	line 280	C/C++ Problem
+[E0004] Invalid operand	lab1.asm	/LAB1	line 284	C/C++ Problem
+[E0004] Invalid operand	lab1.asm	/LAB1	line 295	C/C++ Problem
+[E0004] Invalid operand	lab1.asm	/LAB1	line 298	C/C++ Problem
+[E0004] Invalid operand	lab1.asm	/LAB1	line 312	C/C++ Problem
+[E0004] Operand Rs must be a register	lab1.asm	/LAB1	line 298	C/C++ Problem
+[E0004] Register list required	lab1.asm	/LAB1	line 149	C/C++ Problem
+[E0004] Register list required	lab1.asm	/LAB1	line 151	C/C++ Problem
+[E0004] Register list required	lab1.asm	/LAB1	line 167	C/C++ Problem
+[E0004] Register list required	lab1.asm	/LAB1	line 169	C/C++ Problem
+[E0005] Missing operand(s)	lab1.asm	/LAB1	line 314	C/C++ Problem
+[E0300] The following symbols are undefined:	lab1.asm	/LAB1	 	C/C++ Problem
+gmake: *** [lab1.obj] Error 1	LAB1		 	C/C++ Problem

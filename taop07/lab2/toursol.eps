@@ -1,0 +1,119 @@
+%!  Kajs postscriptgenerator
+%%BoundingBox: 0 0 100 100
+/text
+{gsave /ntxt exch def newpath translate 0 0 moveto
+/Helvetica findfont 3 scalefont setfont
+ntxt dup stringwidth 2 div neg exch 2 div neg exch
+moveto 0 -0.1 rmoveto show grestore} def
+/box 
+{/y2 exch def /x2 exch def /y1 exch def /x1 exch def
+/x3 x2 x1 add 2 div def /y3 y2 y1 add 2 div def
+gsave newpath x1 y1 moveto x1 y2 lineto x2 y2 lineto 
+x2 y1 lineto x1 y1 lineto stroke grestore} def
+/pos 
+{/atxt exch def /y exch def /x exch def
+/x2 x radi add def
+gsave newpath x2 y moveto x y radi 0 360 arc stroke
+x 2 add y atxt text grestore} def
+80 200 translate
+6 6 scale
+/dia 2 def /radi dia 2 div def
+1 0 0 setrgbcolor
+0.15 setlinewidth
+-1 50 (1) pos
+0 0 0 setrgbcolor
+20 40 (2) pos
+35 40 (3) pos
+45 40 (4) pos
+55 40 (5) pos
+30 35 (6) pos
+60 30 (7) pos
+35 25 (8) pos
+45 20 (9) pos
+25 15 (10) pos
+35 15 (11) pos
+55 15 (12) pos
+25 5 (13) pos
+35 5 (14) pos
+65 0 (15) pos
+ [1 0.5] 0 setdash 
+1 0 1 setrgbcolor
+-1 50 moveto
+20 40 lineto stroke
+ [1 0.5] 0 setdash 
+1 0 1 setrgbcolor
+-1 50 moveto
+25 15 lineto stroke
+ [] 0 setdash 
+1 0 0 setrgbcolor
+-1 50 moveto
+65 0 lineto stroke
+ [] 0 setdash 
+0 0 0 setrgbcolor
+20 40 moveto
+30 35 lineto stroke
+ [1 0.5] 0 setdash 
+0 0 1 setrgbcolor
+20 40 moveto
+35 25 lineto stroke
+ [] 0 setdash 
+0 0 0 setrgbcolor
+35 40 moveto
+45 40 lineto stroke
+ [] 0 setdash 
+0 0 0 setrgbcolor
+35 40 moveto
+30 35 lineto stroke
+ [] 0 setdash 
+0 0 0 setrgbcolor
+45 40 moveto
+55 40 lineto stroke
+ [] 0 setdash 
+0 0 0 setrgbcolor
+55 40 moveto
+60 30 lineto stroke
+ [1 0.5] 0 setdash 
+0 0 1 setrgbcolor
+60 30 moveto
+45 20 lineto stroke
+ [1 0.5] 0 setdash 
+0 0 1 setrgbcolor
+60 30 moveto
+55 15 lineto stroke
+ [1 0.5] 0 setdash 
+0 0 1 setrgbcolor
+35 25 moveto
+45 20 lineto stroke
+ [1 0.5] 0 setdash 
+0 0 1 setrgbcolor
+35 25 moveto
+25 15 lineto stroke
+ [1 0.5] 0 setdash 
+0 0 1 setrgbcolor
+35 25 moveto
+35 15 lineto stroke
+ [1 0.5] 0 setdash 
+0 0 1 setrgbcolor
+45 20 moveto
+35 15 lineto stroke
+ [1 0.5] 0 setdash 
+0 0 1 setrgbcolor
+45 20 moveto
+55 15 lineto stroke
+ [] 0 setdash 
+0 0 0 setrgbcolor
+25 15 moveto
+25 5 lineto stroke
+ [] 0 setdash 
+0 0 0 setrgbcolor
+35 15 moveto
+35 5 lineto stroke
+ [] 0 setdash 
+0 0 0 setrgbcolor
+55 15 moveto
+65 0 lineto stroke
+ [] 0 setdash 
+0 0 0 setrgbcolor
+25 5 moveto
+35 5 lineto stroke
+showpage
