@@ -117,6 +117,15 @@ GPIOF_GPIODATA	.equ	0x4002507c ; dataregister port F
 GPIOF_GPIODIR	.equ	0x40025400 ; riktningsregister port F
 GPIOF_GPIOICR	.equ	0x4002541c ; rensa avbrottrequest port F
 	
+;*****************************************************
+;
+; Definierade adresser
+; 
+;*****************************************************
+
+TIME	.equ	0x20001000 ; Start address för tid 4byte
+MUXDIGIT	.equ	0x20001100 ; 0-3 vilken siffra som muxas
+	
 	
 ;*****************************************************
 ;
@@ -125,15 +134,17 @@ GPIOF_GPIOICR	.equ	0x4002541c ; rensa avbrottrequest port F
 ;*****************************************************
 	
             .align 4    ; make sure these constants start on 4 byte boundary
-Bakgrundstext    .string    "Bakgrundsprogram",13,10,0
-Lefttextstart    .string "    AVBROTT v",0xe4, "nster",13,10,0
-Leftstar         .string "          *",13,10,0
-Lefttextend      .string "    SLUT v",0xe4, "nster",13,10,0
-Righttextstart   .string "              AVBROTT h",0xf6, "ger",13,10,0
-Rightstar        .string "                    *",13,10,0
-Righttextend     .string "              SLUT h",0xf6, "ger",13,10,0
+SJUSEGTAB	.byte 0xfc	; '0 
+		.byte 0x60	; '1
+		.byte 0xda	; '2 
+		.byte 0xf2	; '3 
+		.byte 0x66	; '4 
+		.byte 0xb6	; '5 
+		.byte 0xbe	; '6 
+		.byte 0xe0	; '7
+		.byte 0xfe	; '8 
+		.byte 0xe6	; '9 
 
-    
     .global main    ; main is defined in this file
     .global intgpiod    ; intgpiod is defined in this file
     .global intgpiof    ; intgpiof is defined in this file
@@ -149,9 +160,25 @@ main:
     bl inituart
     bl initGPIOD
     bl initGPIOF
+    bl initGPIOB
+    bl initGPIOE
     bl initint
-    mov  r1,#(RCGCGPIO & 0xffff)
-    movt r1,#(RCGCGPIO >> 16)
+    mov r0,#(MUXDIGIT & 0xffff) ; Sätt muxad siffra till 0
+    movt r0,#(MUXDIGIT >> 16) 
+	mov r1,#0x00
+	str r1,[r0]
+
+    mov r0,#(TIME & 0xffff)	; Sätt tid till 0
+    movt r0,#(TIME >> 16) 
+	mov r1,#0 ;Ladda kod för sifran 0 till r1
+	str r1,[r0],#0
+	mov r1,#0 ;Ladda kod för sifran 0 till r1
+	str r1,[r0],#0
+	mov r1,#0 ;Ladda kod för sifran 0 till r1
+	str r1,[r0],#0
+	mov r1,#0 ;Ladda kod för sifran 0 till r1
+	str r1,[r0],#0
+
 
     mov r0,#(0x00010203 & 0xffff) 
     movt r0,#(0x00010203 >> 16) 
@@ -180,31 +207,54 @@ main:
     mov r12,#(0xc0c1c2c3 & 0xffff)
     movt r12,#(0xc0c1c2c3 >> 16)
 
+
     CPSIE I ; tillåt avbrott
 
-printloop:
-	CPSID I  ;Uppgift 3
-    bl SKBAK
-    CPSIE I  ; Uppgift 3
-    mov r1, #1000
-    bl DELAY
-    b printloop
+infinitenone:
+	wfi
+    b infinitenone
     
     .align 0x100    ; Place interrupt routine for GPIO port D
                     ; at an adress that ends with two zeros
 ;**********************************************
 ;*
-;* Place your interrupt routine for GPIO port D here
+;* Place your interrupt routine for GPIO port D here (MUX-interrupt)
 ;*
 intgpiod:
 
-	mov r0, #0x80			; Ladda 0 till minnessaddressen för knappen.
+    CPSID I ; tillåt inte avbrott
+ 	mov r0, #0x80			; Återställ avbrott
 	mov r1, #(GPIOD_GPIOICR & 0xffff)
 	movt r1, #(GPIOD_GPIOICR >> 16)
 	str r0,[r1]
-	push {lr}
-	bl SKAVH ; Printa avbrott höger
-	pop {lr}
+	
+	mov r0, #(TIME & 0xffff)	;Address för första address på tid
+	movt r0, #(TIME >> 16)
+
+	mov r12, #(MUXDIGIT & 0xffff)
+	movt r12, #(MUXDIGIT >> 16)
+	ldrb r1,[r12]	; Sifferposition
+	
+	ldrb r0,[r0,r1]	;Siffervärde (Ej kodat)
+	adr r2,SJUSEGTAB
+	ldrb r0,[r2,r0] ;Ladda kodning för siffran
+
+
+	mov r2, #(GPIOE_GPIODATA & 0xffff)
+	movt r2, #(GPIOE_GPIODATA >> 16)
+	strb r1,[r2]		; Skriv ut vilken sifferpostion som muxas
+
+	mov r2, #(GPIOB_GPIODATA & 0xffff)
+	movt r2, #(GPIOB_GPIODATA >> 16)
+	strb r0,[r2]		; Skriv ut vilken siffra som muxas
+	
+	add r1,#1 
+	cmp r1,#4
+	bne gpiodexit
+	mov r1,#0	
+gpiodexit:
+ 	strb r1,[r12]
+    CPSIE I ; tillåt avbrott
 	bx lr
 
                     ; Here is the interrupt routine triggered by port D
@@ -214,16 +264,53 @@ intgpiod:
     .align 0x100    ; Place interrupt routine for GPIO port F at an adress that ends with two zeros
 ;***********************************************
 ;*
-;* Place your interrupt routine for GPIO port F here
+;* Place your interrupt routine for GPIO port F here (
 ;*
 intgpiof:
-    mov r0, #0x10			; Ladda 0 till minnessaddressen för knappen.
+    CPSID I ; tillåt inte avbrott
+	mov r0, #0x10			; Äterställ avbrott
 	mov r1, #(GPIOF_GPIOICR & 0xffff)
 	movt r1, #(GPIOF_GPIOICR >> 16)
-	str r0,[r1]
-	push {lr}
-	bl SKAVV ; Printa avbrott vänster
-	pop {lr}
+	str r0,[r1]	
+
+	push {r4,r5,r6,r7}
+	mov r0, #(TIME & 0xffff)
+	movt r0, #(TIME >> 16)
+	ldrb r4,[r0],#1
+	ldrb r5,[r0],#1
+	ldrb r6,[r0],#1
+	ldrb r7,[r0]
+
+	add r4,r4,#1
+	cmp r4,#10	;Kollar om sista sekundsiffran blev för stor
+	bne exitgpiof
+	mov r4,#0
+	add r5,#1
+	cmp r5,#6	;Kollar om först sekundsiffran blev för stor
+	bne exitgpiof
+
+	mov r5,#0
+	add r6,r6,#1
+	cmp r6,#10	;Kollar om sista minutsifran blev för stor
+	bne exitgpiof
+	mov r6,#0
+	add r7,#1
+	cmp r7,#6	;Kollar om först minutsifran blev för stor
+	bne exitgpiof
+	mov r7,#0
+
+exitgpiof:
+
+	mov r0, #(TIME & 0xffff)
+	movt r0, #(TIME >> 16)
+	strb r4,[r0],#1
+	strb r5,[r0],#1
+	strb r6,[r0],#1
+	strb r7,[r0]
+
+	pop {r4,r5,r6,r7}
+
+    CPSIE I ; tillåt avbrott
 	bx lr              ; Here is the interrupt routine triggered by port F
 
 
@@ -236,67 +323,6 @@ intgpiof:
 ;*
 
     .align 2
-
-;* SKBAK: Prints the text "Bakgrundsprogram" slowly
-;* Destroys r3, r2, r1, r0
-SKBAK:
-    push {lr}
-    adr  r3,Bakgrundstext
-    bl   slowprintstring
-    pop  {lr}
-    bx   lr
-
-;* SKAVV: Prints the text "Avbrott vanster" followed by 5 lines with a star at the end
-;* Destroys r3, r2, r1, r0
-SKAVV:
-    push {lr}
-    adr  r3,Lefttextstart
-    bl   slowprintstring
-    mov  r2,#5
-leftloop:
-    mov  r1,#600
-    bl   DELAY
-    adr  r3,Leftstar
-    bl   slowprintstring
-    subs r2,r2,#1
-    bne  leftloop
-    adr  r3,Lefttextend
-    bl   slowprintstring
-    pop  {lr}
-    bx   lr
-
-;* SKAVH: Prints the text "Avbrott hoger" followed by 5 lines with a star at the end
-;* Destroys r3, r2, r1, r0
-SKAVH:
-    push {lr}
-    adr  r3,Righttextstart
-    bl   slowprintstring
-    mov  r2,#5
-rightloop:
-    mov r1,#600
-    bl   DELAY
-    adr  r3,Rightstar
-    bl   slowprintstring
-    subs r2,r2,#1
-    bne  rightloop
-    adr  r3,Righttextend
-    bl   slowprintstring
-    pop  {lr}
-    bx   lr
-
-;* DELAY:
-;* r1 = number of ms, destroys r1
-DELAY:
-    push {r0}
-loop_millisecond:
-    mov  r0,#0x1300
-loop_delay:
-    subs r0,r0,#1
-    bne  loop_delay
-    subs r1,r1,#1
-    bne  loop_millisecond
-    pop  {r0}
-    bx   lr
 
 ;* inituart: Initialize serial communiation (enable UART0, set baudrate 115200, 8N1 format)
 inituart:
@@ -632,41 +658,3 @@ initint:
     cpsie i
 
     bx   lr
-
-
-; Start adress in r3, string terminated with the value 0
-; destroy r0, r1, r3
-slowprintstring:
-    push {lr}
-nextchar:
-    ldrb r0,[r3],#1
-    cmp  r0,#0
-    beq  slowprintstringdone
-    bl   printchar
-    mov  r1,#40
-    bl   DELAY
-    b    nextchar
-slowprintstringdone:
-    pop  {lr}
-    bx   lr
-
-printchar:
-;   Print character located in r0 (bit 7 - bit 0)
-;   Check bit 5 (TXFF) in UART0_FR, wait until it is 0
-;   send bit 7-0 to UART0_DR
-    push {r1}
-loop1:
-    mov  r1,#(UART0_base & 0xffff)
-    movt r1,#(UART0_base >> 16)
-    ldr  r1,[r1,#UARTFR]
-    ands r1,#0x20           ; Check if send buffer is full
-    bne  loop1              ; branch if full 
-    mov  r1,#(UART0_base & 0xffff)
-    movt r1,#(UART0_base >> 16)
-    str  r0,[r1,#UARTDR]    ; send character
-    pop  {r1}
-    bx   lr
-
-
-
-

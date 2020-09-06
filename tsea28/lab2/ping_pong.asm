@@ -1,9 +1,5 @@
 ;*******************************
-;*
-;* Malldokument Lab2 i Datorteknik Y (Darma)
-;*
-;* KPa 180212
-;*     180219 Fix initGPIOE, GPIODATA def
+;* ;* Malldokument Lab2 i Datorteknik Y (Darma) ;* ;* KPa 180212 ;*     180219 Fix initGPIOE, GPIODATA def
 ;*     180301 Move definitions to top of file, use only english comments
 ;*     190213 Update definitions to use .equ/mov/movt instead of .field/ldr
 ;* OAn 200131 Last line in interrupt printout different from other lines 
@@ -117,7 +113,18 @@ GPIOF_GPIODATA	.equ	0x4002507c ; dataregister port F
 GPIOF_GPIODIR	.equ	0x40025400 ; riktningsregister port F
 GPIOF_GPIOICR	.equ	0x4002541c ; rensa avbrottrequest port F
 	
-	
+;*****************************************************
+;
+; Memory addresses used for game
+;
+;*****************************************************
+
+DIODES	.equ	0x20001000 ; Diodstatus
+RES_A	.equ	0x20001100 ; Resultatet för A
+RES_B	.equ	0x20001200 ; Resultatet för B
+MOVDIR	.equ	0x20001300 ; Rorelserikting
+SERVE	.equ	0x20001500 ; Servestatus
+
 ;*****************************************************
 ;
 ; Texts used by SKBAK, SKAVH, SKAVV
@@ -125,7 +132,7 @@ GPIOF_GPIOICR	.equ	0x4002541c ; rensa avbrottrequest port F
 ;*****************************************************
 	
             .align 4    ; make sure these constants start on 4 byte boundary
-Bakgrundstext    .string    "Bakgrundsprogram",13,10,0
+Bakgrundstext    .string    "Bakfull",13,10,0
 Lefttextstart    .string "    AVBROTT v",0xe4, "nster",13,10,0
 Leftstar         .string "          *",13,10,0
 Lefttextend      .string "    SLUT v",0xe4, "nster",13,10,0
@@ -143,15 +150,14 @@ Righttextend     .string "              SLUT h",0xf6, "ger",13,10,0
 ;*************************************************************************
 ;*
 ;* Place your main program here
-;*
+;* r12 time counter r11 first serve check
 
 main:
     bl inituart
     bl initGPIOD
     bl initGPIOF
+    bl initGPIOB
     bl initint
-    mov  r1,#(RCGCGPIO & 0xffff)
-    movt r1,#(RCGCGPIO >> 16)
 
     mov r0,#(0x00010203 & 0xffff) 
     movt r0,#(0x00010203 >> 16) 
@@ -180,31 +186,198 @@ main:
     mov r12,#(0xc0c1c2c3 & 0xffff)
     movt r12,#(0xc0c1c2c3 >> 16)
 
-    CPSIE I ; tillåt avbrott
+    ;initiallisera
+	
 
-printloop:
-	CPSID I  ;Uppgift 3
-    bl SKBAK
-    CPSIE I  ; Uppgift 3
-    mov r1, #1000
-    bl DELAY
-    b printloop
+    mov r0,#(RES_A & 0xffff) ; satt A:s poang till 0
+    movt r0,#(RES_A >> 16)
+	mov r1, #0x00
+	str r1,[r0]
+
+    mov r0,#(RES_B & 0xffff) ; satt B:s poang till 0
+    movt r0,#(RES_B >> 16)
+	mov r1, #0x00
+	str r1,[r0]
+
+    mov r0,#(DIODES & 0xffff) ; satt dioder i vanster servelage.
+    movt r0,#(DIODES >> 16)
+	mov r1, #0x80
+	str r1,[r0]
+
+    mov r0,#(SERVE & 0xffff) ; satt servestatus till sann
+    movt r0,#(SERVE >> 16)
+	mov r1, #0xFF
+	str r1,[r0]
+
+    mov r0,#(MOVDIR & 0xffff) ; satt rikting till vanster
+    movt r0,#(MOVDIR >> 16)
+	mov r1, #0x00
+	str r1,[r0]
+	
+	mov r12,#0	; Nollställr räknare
+	mov r11,#0xff  ; Första runda
+	mov r10,#0  ; Ge poäng
+
+checkserve:
+    mov r0,#(SERVE & 0xffff) ; Kolla servstatus
+    movt r0,#(SERVE >> 16)
+    ldr r0,[r0]
+    cmp r0,#0
+	beq ejserve
+	;serve
+	cmp r11,#0xff  ;Kolla om första runda
+	bne checkserve
+	;inte första runda
+	mov r11, #0 ;Nollställer första runda
+
+	mov r12, #0 ;Nollställer räknare
+
+	;set startserve
+	mov r0,#(MOVDIR & 0xffff) ; Kollar vem som servar (vänster=vänster, höger=höger)
+    movt r0,#(MOVDIR >> 16)
+    ldr r0,[r0]
+    cmp r0,#0
+    bne serveright
+    ;Serverleft
+
+    mov r0,#0x80
+    bl updatediodes ; förstör r1
+    b givepoints
+
+serveright:
+
+    mov r0,#0x01
+   	bl updatediodes ; förstör r1
+	b givepoints
+
+givepoints:
+	cmp r10,#0xff  ;Kolla poäng skall ges
+	bne checkserve
+	;mov r10, #0 ;Nollställer gepoäng
+
+	mov r0,#(MOVDIR & 0xffff) ; Kollar vem som vann (vänster=vänster, höger=höger)
+    movt r0,#(MOVDIR >> 16)
+    ldr r0,[r0]
+    cmp r0,#0x00
+	beq okavenster
+	mov r0,#(RES_B & 0xffff) ; Öka Bs poäng
+    movt r0,#(RES_B >> 16)
+    ldr r1,[r0]
+    add r1,r1,#1
+    str r1,[r0]
+    b checkserve
+
+okavenster:
+	mov r0,#(RES_A & 0xffff) ; Öka As poäng
+    movt r0,#(RES_A >> 16)
+    ldr r1,[r0]
+    add r1,r1,#1
+    str r1,[r0]
+	b checkserve
+
+ejserve:
+	mov  r11, #0xff
+	mov  r10, #0xff
+	add r12,r12,#1
+	mov r0,#(0xf4240 & 0xffff)
+    movt r0,#(0xf4240 >> 16)
+	cmp r12,r0		; Kollar om tid gått.
+	bne checkserve  ; Börja om om tid ej gått ut
+	; Shifta / ge poäng
+	;kolla rikting
+	mov r12,#0
+	mov r0,#(DIODES & 0xffff) ; Ladda dioder till register
+    movt r0,#(DIODES >> 16)
+	ldr r0,[r0]
+
+	mov r1,#(MOVDIR & 0xffff) ; Ladda Movedir till minne
+    movt r1,#(MOVDIR >> 16)
+    ldr r1,[r1]
+
+    cmp r1, #0 ;kolla riktning
+    bne shiftright
+    ;shifta vänster
+
+    lsl r0,#1
+    cmp r0,#0x100 ; för långt
+    beq setserve
+    bl updatediodes
+    b checkserve
+
+shiftright:
+    lsr r0,#1
+    cmp r0,#0
+    beq setserve; för långt
+    bl updatediodes
+    b checkserve
+
+setserve:
+	mov r0,#(SERVE & 0xffff) ; Set servstatus för att main ska kunna detektera att poäng fåtts
+    movt r0,#(SERVE >> 16)
+    mov r1,#0xff
+    str r1,[r0]
+    mov r11, #0xff
+
+    mov r0,#(MOVDIR & 0xffff) ; Byt rikting så att den visar vem som skall serva / få poäng
+    movt r0,#(MOVDIR >> 16)
+    ldr r1,[r0]
+    cmp r1,#0
+    bne setwinner1
+    mov r1,#0xff
+    b setwinner2
+setwinner1:
+	mov r1,#0x0
+	b setwinner2
+setwinner2:
+    str r1,[r0]
+    b checkserve
+
+;**********************************************
+; Updates diodes from r0
+; Destroys r1
+;**********************************************
+updatediodes:
+    mov r1,#(GPIOB_GPIODATA & 0xffff) ; Skriver till port B
+    movt r1,#(GPIOB_GPIODATA >> 16)
+    str r0,[r1]
+    mov r1,#(DIODES & 0xffff) ; Skriver till diodminne
+    movt r1,#(DIODES >> 16)
+    str r0,[r1]
+	bx lr
+
     
     .align 0x100    ; Place interrupt routine for GPIO port D
                     ; at an adress that ends with two zeros
 ;**********************************************
 ;*
-;* Place your interrupt routine for GPIO port D here
+;* Place your interrupt routine for GPIO port D here (Hoger)
 ;*
 intgpiod:
-
-	mov r0, #0x80			; Ladda 0 till minnessaddressen för knappen.
+	mov r0, #0x80			; Återställ  avbrott
 	mov r1, #(GPIOD_GPIOICR & 0xffff)
 	movt r1, #(GPIOD_GPIOICR >> 16)
 	str r0,[r1]
-	push {lr}
-	bl SKAVH ; Printa avbrott höger
-	pop {lr}
+
+	mov r0,#(MOVDIR & 0xffff) ; Sätt riktning vänster (Blir rätt om jag tänker rätt...)
+    movt r0,#(MOVDIR >> 16)
+    mov r1, #0x00
+    str r1,[r0]
+
+	mov r0,#(DIODES & 0xffff) ; Ladda dioder till register
+    movt r0,#(DIODES >> 16)
+    ldr r0,[r0]
+    cmp r0,#0x01
+	bne felhoger
+	mov r0,#(SERVE & 0xffff) ; Sätt serve = 0   (Om i servläge, servar höger annars spelar han tillbaka)
+    movt r0,#(SERVE >> 16)
+    mov r1,#0
+    str r1,[r0]
+	bx lr
+felhoger:
+	mov r0,#(SERVE & 0xffff) ; Sätt serve = 0xff (Vänster får poäng av main senare.)
+    movt r0,#(SERVE >> 16)
+    mov r1,#0xff
+    str r1,[r0]
 	bx lr
 
                     ; Here is the interrupt routine triggered by port D
@@ -214,17 +387,36 @@ intgpiod:
     .align 0x100    ; Place interrupt routine for GPIO port F at an adress that ends with two zeros
 ;***********************************************
 ;*
-;* Place your interrupt routine for GPIO port F here
+;* Place your interrupt routine for GPIO port F here (Vanster)
 ;*
 intgpiof:
-    mov r0, #0x10			; Ladda 0 till minnessaddressen för knappen.
+	mov r0, #0x10			; Återställ  avbrott
 	mov r1, #(GPIOF_GPIOICR & 0xffff)
 	movt r1, #(GPIOF_GPIOICR >> 16)
 	str r0,[r1]
-	push {lr}
-	bl SKAVV ; Printa avbrott vänster
-	pop {lr}
-	bx lr              ; Here is the interrupt routine triggered by port F
+
+	mov r0,#(MOVDIR & 0xffff) ; Sätt riktning höger (Blir rätt om jag tänker rätt...)
+    movt r0,#(MOVDIR >> 16)
+    mov r1, #0xff
+    str r1,[r0]
+
+	mov r0,#(DIODES & 0xffff) ; Ladda dioder till register
+    movt r0,#(DIODES >> 16)
+    ldr r0,[r0]
+    cmp r0,#0x80
+	bne felvanster
+	mov r0,#(SERVE & 0xffff) ; Sätt serve = 0   (Om i servläge, servar höger annars spelar han tillbaka)
+    movt r0,#(SERVE >> 16)
+    mov r1,#0
+    str r1,[r0]
+	bx lr
+felvanster:
+	mov r0,#(SERVE & 0xffff) ; Sätt serve = 0xff (Höger får poäng av main senare.)
+    movt r0,#(SERVE >> 16)
+    mov r1,#0xff
+    str r1,[r0]
+	bx lr
+      ; Here is the interrupt routine triggered by port F
 
 
 

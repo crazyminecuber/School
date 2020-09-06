@@ -1,0 +1,68 @@
+reset;
+option solver cplex;
+
+model setcover.mod;
+data setcover1.dat;
+
+solve setcover;
+
+# OBSERVERA!!!!!!!
+# Antal_mikroskopbilder måste ges målfunktionsvärdet och 
+# variablerna måste döpas till x för att datafilen till 
+# handelsresandeproblemet ska kunna genereras.
+
+display antal_mikroskopbilder;
+display x;
+
+# Ni behöver inte göra några förändringar nedan i programmet.
+# Beräkna parametrar för handelsresandeproblemet
+# och skriver ned datafilen stsp.dat.
+
+param i_node;
+param N_Nodes;
+let N_Nodes := antal_mikroskopbilder + 1;
+param Node_Pos {1..N_Nodes, 1..2};
+set NODES := 1..N_Nodes;
+set EDGES within (NODES cross NODES);
+param c {EDGES} >= 0;
+
+let Node_Pos[1,1] := -1;
+let Node_Pos[1,2] := -1;
+
+let i_node := 2;
+for {i in 1..n-d+1, j in 1..n-d+1} {
+  if (x[i,j] = 1) then {
+    let Node_Pos[i_node,1] := i;
+    let Node_Pos[i_node,2] := j;
+    let i_node := i_node+1;
+  }
+}
+#display Node_Pos;
+
+printf "set NODES :=" > stsp.dat;
+for { i in NODES } printf " %d", i > stsp.dat;
+printf ";\n" > stsp.dat;
+printf "param: EDGES: c :=\n" > stsp.dat;
+
+param dx;
+param dy;
+
+for { i in NODES } {
+  if (i = 1) then {
+    for {j in NODES}
+     if (j != 1) then printf "       1 %d   0\n", j > stsp.dat ;
+  }
+  else {
+    for {j in NODES} {
+      if (j > i) then {
+        let dx := Node_Pos[i,1] - Node_Pos[j,1];
+        let dy := Node_Pos[i,2] - Node_Pos[j,2];
+        printf "       %d %d   %f\n", i, j, sqrt(dx*dx + dy*dy) > stsp.dat ;
+      }
+    } 
+  } 
+}
+printf ";\n" > stsp.dat;
+printf "param " > stsp.dat;
+display Node_Pos > stsp.dat;
+close stsp.dat;
