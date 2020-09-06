@@ -42,7 +42,7 @@ v_U_DSQ = 5
 v_I_DQ = 5 * 10**-3
 t = Symbol('t')
 v_u_in = sin(10**3 * t)
-v_U_BE = 0.7 
+v_U_BE = 0.7
 v_h_21 = 100
 
 
