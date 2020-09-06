@@ -1,0 +1,35 @@
+Skriv in ett heltal: 10.3
+Du skrev in talet: 10
+
+Skriv in fem heltal: -12 10330 27 13 11 fem
+Du skrev in talen: -12 10330 27 13 11
+
+Skriv in ett heltal och ett flyttal: 3267 3.141592 d
+Du skrev in heltalet:     3267
+Du skrev in flyttalet: 3.1416
+
+Skriv in ett flyttal och ett heltal: 67 3.141592
+Du skrev in heltalet:----------3
+Du skrev in flyttalet:---67.0000
+
+Skriv in ett tecken: Tomas
+Du skrev in tecknet: T
+
+Skriv in ett ord: 123Kalle
+Du skrev in ordet: 123Kalle
+
+Skriv in ett heltal och ett ord: 12är det lunch
+Du skrev in talet |12| och ordet |är|.
+
+Skriv in ett tecken och ett ord: oklart
+Du skrev in "klart" och 'o'.
+
+Skriv in en rad text: här skriver vi lite mer
+Du skrev in: " här skriver vi lite mer"
+
+Skriv in en till rad text: lite mera text här
+Du skrev in: "lite mera text här"
+
+Skriv in tre ord: Testar ett program
+Du skrev in: "Testar", "ett" och "program"
+
