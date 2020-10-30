@@ -1,3 +1,7 @@
+minimal:
+	g++ -Wall -Wextra -Weffc++ minimal.cpp;
+	./a.out
+
 lab01:
 	g++ -Wall -Wextra -Weffc++ lab01.cpp;
 	./a.out

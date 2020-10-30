@@ -1,4 +1,3 @@
-//TODO Ta bort setfill(' ')?
 #include <iostream>
 #include <iomanip>
 #include <string>

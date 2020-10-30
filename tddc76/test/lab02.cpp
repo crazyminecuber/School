@@ -1,16 +1,9 @@
-/*
- * Notes: setfill ärvs till alla framtida cout:s
- * right, left ärvs också
- * setw ärvs inte
- * Vad menar de med rimlighetskontroll?
- */
-
 #include <iostream>
 #include <iomanip>
 
 using namespace std;
 
-int getCelcius(string const &askPhrase); // Får det inte stå &askPhrase?, Är "string" en const?
+int getCelcius(string const & askPhrase);
 float celciusToKelvin(int celcius);
 float celciusToFarenheit(int celcius);
 float celciusToReaumur(int celcius);
@@ -24,7 +17,7 @@ int main()
     celciusLow = getCelcius("Ange startvärde:");
     celciusHigh = getCelcius("Ange slutvärde:");
 
-    while(celciusLow >= celciusHigh) // Räknas detta som rimlighetskontroll? Ska vi bryta ut det?
+    while(celciusLow >= celciusHigh)
     {
         cout << "Felaktig inmatning!" << endl;
         celciusHigh = getCelcius("Ange slutvärde:");
@@ -40,7 +33,7 @@ int main()
 
     // Skriv ut tabellen med ' ' som filler.
     cout<< setfill(' ');
-    for(int i=celciusLow; i<=celciusHigh; i++)
+    for(int i{celciusLow}; i<=celciusHigh; i++)
     {
         cout << setw(7)  << i
              << setw(11) << celciusToKelvin(i)
@@ -55,7 +48,7 @@ int main()
  * Skriver ut askPhrase som ber användaren om input. Kontrollerar om input är
  * en korrekt temperatur. Annars frågas användaren igen.
  */
-int getCelcius(string const &askPhrase)
+int getCelcius(string const & askPhrase)
 {
     int celcius{};
     cout << setw(20) << askPhrase;
